@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 // lucide icons (UI icons)
 import { 
-  BookOpen, Heart, ArrowRight, Mail, MapPin, Phone, Clock,
+  Heart, ArrowRight, Mail, MapPin, Phone, Clock,
   Shield, Zap, Crown
 } from 'lucide-react';
 
@@ -50,10 +50,7 @@ export default function Footer() {
           {/* Brand Section */}
           <div className="lg:col-span-2">
             <Link to="/" className="group flex items-center gap-3 mb-5">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                <BookOpen className="text-white" size={20} />
-              </div>
-              {/* Logo Image Added Here */}
+              {/* Logo Image Only - BookOpen removed */}
               <img 
                 src="/logo.png" 
                 alt="Blogy Logo" 
