@@ -52,10 +52,8 @@ export default function AdminBlogEditor() {
         const token = localStorage.getItem('blogy_token')
         
         // First, get all blogs to find the specific blog
-        const response = await fetch(`/api/blogs/admin/all?limit=200`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-        const data = await response.json()
+        const response = await getAdminBlogs({ limit: 200 })
+        const data = response.data
         const blog = data.blogs?.find(b => b._id === id)
         
         if (blog) {
