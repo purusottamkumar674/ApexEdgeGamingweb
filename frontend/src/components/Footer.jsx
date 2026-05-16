@@ -73,8 +73,7 @@ export default function Footer() {
               />
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed mb-6 max-w-md">
-              A platform for thinkers, creators, and dreamers. Discover ideas that inspire, 
-              share your voice, and join a community of curious minds.
+             ApexEdge Gaming is a next-generation esports and gaming platform built for passionate gamers, creators, and competitors. We bring together thrilling gameplay, competitive tournaments, and a vibrant community where every player can rise, connect, and dominate the game.
             </p>
             
             {/* Trust Badge */}
@@ -155,24 +154,41 @@ export default function Footer() {
             </h4>
             
             {/* Contact Info */}
-            <div className="space-y-3 mb-6">
-              <div className="flex items-center gap-3 text-sm text-gray-400">
-                <Mail size={14} className="text-purple-400" />
-                <span>[EMAIL_ADDRESS]</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm text-gray-400">
-                <Phone size={14} className="text-purple-400" />
-                <span>+91 9790179454</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm text-gray-400">
-                <MapPin size={14} className="text-purple-400" />
-                <span>New York, NY 10001</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm text-gray-400">
-                <Clock size={14} className="text-purple-400" />
-                <span>Mon-Fri: 9AM - 6PM</span>
-              </div>
-            </div>
+            <div className="space-y-4 mb-6">
+
+  {/* Email */}
+  <div className="flex items-start gap-3 text-sm text-gray-400">
+    <Mail size={16} className="text-purple-400 mt-1 flex-shrink-0" />
+    <span className="leading-relaxed break-words">
+      apexedgegaming@gmail.com
+    </span>
+  </div>
+
+  {/* Phone */}
+  <div className="flex items-start gap-3 text-sm text-gray-400">
+    <Phone size={16} className="text-purple-400 mt-1 flex-shrink-0" />
+    <span className="leading-relaxed">
+      +91 9031062295
+    </span>
+  </div>
+
+  {/* Address */}
+  <div className="flex items-start gap-3 text-sm text-gray-400">
+    <MapPin size={16} className="text-purple-400 mt-1 flex-shrink-0" />
+    <span className="leading-relaxed break-words">
+      Kidwaipuri Krishna Park, Patna, Bihar, India
+    </span>
+  </div>
+
+  {/* Time */}
+  <div className="flex items-start gap-3 text-sm text-gray-400">
+    <Clock size={16} className="text-purple-400 mt-1 flex-shrink-0" />
+    <span className="leading-relaxed">
+      Mon - Fri: 9 AM - 6 PM
+    </span>
+  </div>
+
+</div>
 
             {/* Newsletter Form */}
             <form onSubmit={handleSubscribe} className="mt-4">
