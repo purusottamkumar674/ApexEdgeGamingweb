@@ -95,14 +95,14 @@ export default function Navbar() {
               <Link to="/" className="group relative flex items-center gap-2 shrink-0">
                 <div className="relative">
                   <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 animate-pulse-slow opacity-75"></div>
-                  <div className={`
+                  {/* <div className={`
                     relative bg-gradient-to-br from-purple-600 to-pink-500 rounded-lg 
                     flex items-center justify-center shadow-lg transition-all duration-500
                     ${scrolled ? 'w-7 h-7' : 'w-8 h-8'}
                     group-hover:scale-110 group-hover:rotate-12
                   `}>
                     <BookOpen size={scrolled ? 14 : 16} className="text-white transition-all duration-300" />
-                  </div>
+                  </div> */}
                 </div>
                 <div className="flex items-center">
                   <img
