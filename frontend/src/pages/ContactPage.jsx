@@ -45,6 +45,21 @@ export default function ContactPage() {
     }, 1500);
   };
 
+  // Email click handler
+  const handleEmailClick = () => {
+    window.location.href = 'mailto:apexedgegaming@gmail.com';
+  };
+
+  // Phone/Call click handler
+  const handleCallClick = () => {
+    window.location.href = 'tel:+919031062295';
+  };
+
+  // Location/Map click handler
+  const handleLocationClick = () => {
+    window.open('https://www.google.com/maps/place/Kidwaipuri,+Patna,+Bihar/', '_blank');
+  };
+
   const contactInfo = [
     {
       icon: <Mail size={24} />,
@@ -53,6 +68,8 @@ export default function ContactPage() {
       subDetail: 'support@ApexEdgeGaming.com',
       bgColor: 'bg-purple-100',
       iconColor: 'text-purple-600',
+      onClick: handleEmailClick,
+      isClickable: true
     },
     {
       icon: <Phone size={24} />,
@@ -61,6 +78,8 @@ export default function ContactPage() {
       subDetail: 'Mon-Fri, 9am - 6pm EST',
       bgColor: 'bg-pink-100',
       iconColor: 'text-pink-600',
+      onClick: handleCallClick,
+      isClickable: true
     },
     {
       icon: <MapPin size={24} />,
@@ -69,6 +88,8 @@ export default function ContactPage() {
       subDetail: 'Patna, Bihar',
       bgColor: 'bg-orange-100',
       iconColor: 'text-orange-600',
+      onClick: handleLocationClick,
+      isClickable: true
     }
   ];
 
@@ -120,13 +141,13 @@ export default function ContactPage() {
             
             {/* Quick Contact Links */}
             <div className="flex flex-wrap items-center justify-center gap-4">
-              <a href="mailto:[EMAIL_ADDRESS]" className="inline-flex items-center gap-2 text-purple-200 hover:text-white transition-colors bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm">
+              <a href="mailto:apexedgegaming@gmail.com" className="inline-flex items-center gap-2 text-purple-200 hover:text-white transition-colors bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm">
                 <Mail size={14} />
-                [EMAIL_ADDRESS]
+                apexedgegaming@gmail.com
               </a>
-              <a href="tel:+15551234567" className="inline-flex items-center gap-2 text-purple-200 hover:text-white transition-colors bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm">
+              <a href="tel:+919031062295" className="inline-flex items-center gap-2 text-purple-200 hover:text-white transition-colors bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm">
                 <Phone size={14} />
-                +1 (555) 123-4567
+                090310 62295
               </a>
             </div>
           </div>
@@ -140,11 +161,15 @@ export default function ContactPage() {
         </div>
       </div>
 
-      {/* Contact Info Cards */}
+      {/* Contact Info Cards - Now Clickable */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {contactInfo.map((info, idx) => (
-            <div key={idx} className="group bg-white rounded-2xl p-8 text-center shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-100">
+            <div 
+              key={idx} 
+              onClick={info.onClick}
+              className={`group bg-white rounded-2xl p-8 text-center shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-100 ${info.isClickable ? 'cursor-pointer' : ''}`}
+            >
               <div className={`w-16 h-16 ${info.bgColor} rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg group-hover:scale-110 transition-all duration-300`}>
                 <div className={info.iconColor}>{info.icon}</div>
               </div>
@@ -198,7 +223,7 @@ export default function ContactPage() {
                     value={formData.firstName}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all bg-gray-50 hover:bg-white"
-                    placeholder="John"
+                    placeholder="Aman"
                     required
                   />
                 </div>
@@ -210,7 +235,7 @@ export default function ContactPage() {
                     value={formData.lastName}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all bg-gray-50 hover:bg-white"
-                    placeholder="Doe"
+                    placeholder="Kumar"
                     required
                   />
                 </div>
@@ -224,7 +249,7 @@ export default function ContactPage() {
                   value={formData.email}
                   onChange={handleChange}
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all bg-gray-50 hover:bg-white"
-                  placeholder="hello@example.com"
+                  placeholder="apexedgegaming@gmail.com"
                   required
                 />
               </div>
@@ -353,35 +378,19 @@ export default function ContactPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
             <h3 className="text-2xl font-bold text-white mb-2">Find Us Here</h3>
-            <p className="text-gray-400">Visit our headquarters in the heart of New York City</p>
+            <p className="text-gray-400">Visit our headquarters in the heart of Patna City</p>
           </div>
           <div className="rounded-2xl overflow-hidden shadow-2xl">
-            {/* <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024.2219901290355!2d-74.00369368400567!3d40.712776179330206!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a316bed2f1b%3A0x2b4b6e8b8b8b8b8b!2sNew%20York%2C%20NY!5e0!3m2!1sen!2sus!4v1699999999999!5m2!1sen!2sus" 
-              width="100%" 
-              height="400" 
-              style={{ border: 0 }} 
-              allowFullScreen 
-              loading="lazy" 
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3597.7158087309126!2d85.12559567606375!3d25.614358114676566!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ed584775be8627%3A0xce66161bbd79c88f!2sSuper%20City%20Builders%20Pvt.%20Ltd.!5e0!3m2!1sen!2sin!4v1778916002770!5m2!1sen!2sin"
+              width="100%"
+              height="450"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               title="ApexEdgeGaming Office Location"
-            ></iframe> */}
-
-
-
-
-<iframe
-  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3597.7158087309126!2d85.12559567606375!3d25.614358114676566!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ed584775be8627%3A0xce66161bbd79c88f!2sSuper%20City%20Builders%20Pvt.%20Ltd.!5e0!3m2!1sen!2sin!4v1778916002770!5m2!1sen!2sin"
-  width="100%"
-  height="450"
-  style={{ border: 0 }}
-  allowFullScreen
-  loading="lazy"
-  referrerPolicy="no-referrer-when-downgrade"
-></iframe>
-
-
-
+            ></iframe>
           </div>
         </div>
       </div>

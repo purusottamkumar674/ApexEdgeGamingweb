@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import ScrollToTop from "./components/ScrollToTop"
 
 // Public Pages
 import HomePage from './pages/HomePage'
@@ -21,12 +22,24 @@ import AdminBlogs from './pages/admin/AdminBlogs'
 import AdminBlogEditor from './pages/admin/AdminBlogEditor'
 import AdminCategories from './pages/admin/AdminCategories'
 
+// 🔐 Protected Route
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth()
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" /></div>
-  return user?.role === 'admin' ? children : <Navigate to="/admin/login" replace />
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  return user?.role === 'admin'
+    ? children
+    : <Navigate to="/admin/login" replace />
 }
 
+// 🧩 Layouts
 const AdminLayout = ({ children }) => (
   <div className="min-h-screen bg-gray-50">{children}</div>
 )
@@ -39,37 +52,66 @@ const PublicLayout = ({ children }) => (
   </div>
 )
 
+// 🚀 Routes
 function AppRoutes() {
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
-      <Route path="/blog" element={<PublicLayout><BlogPage /></PublicLayout>} />
-      <Route path="/blog/:slug" element={<PublicLayout><BlogDetailPage /></PublicLayout>} />
-      <Route path="/aboutpage" element={<PublicLayout><AboutPage /></PublicLayout>} />
-      <Route path="/categories" element={<PublicLayout><CategoriesPage /></PublicLayout>} />
-      <Route path="/category/:categoryName" element={<PublicLayout><CategoryPage /></PublicLayout>} />
-      <Route path="/contactpage" element={<PublicLayout><ContactPage /></PublicLayout>} />
-      <Route path="/search" element={<PublicLayout><SearchPage /></PublicLayout>} />
-      <Route path="/subscribe" element={<PublicLayout><SubscribePage /></PublicLayout>} />
+    <>
+      <ScrollToTop />
 
-      {/* Admin Routes */}
-      <Route path="/admin/login" element={<AdminLogin />} />
-      <Route path="/admin" element={<ProtectedRoute><AdminLayout><AdminDashboard /></AdminLayout></ProtectedRoute>} />
-      <Route path="/admin/blogs" element={<ProtectedRoute><AdminLayout><AdminBlogs /></AdminLayout></ProtectedRoute>} />
-      <Route path="/admin/blogs/new" element={<ProtectedRoute><AdminLayout><AdminBlogEditor /></AdminLayout></ProtectedRoute>} />
-      <Route path="/admin/blogs/edit/:id" element={<ProtectedRoute><AdminLayout><AdminBlogEditor /></AdminLayout></ProtectedRoute>} />
-      <Route path="/admin/categories" element={<ProtectedRoute><AdminLayout><AdminCategories /></AdminLayout></ProtectedRoute>} />
+      <Routes>
+        <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
+        <Route path="/blog" element={<PublicLayout><BlogPage /></PublicLayout>} />
+        <Route path="/blog/:slug" element={<PublicLayout><BlogDetailPage /></PublicLayout>} />
+        <Route path="/aboutpage" element={<PublicLayout><AboutPage /></PublicLayout>} />
+        <Route path="/categories" element={<PublicLayout><CategoriesPage /></PublicLayout>} />
+        <Route path="/category/:categoryName" element={<PublicLayout><CategoryPage /></PublicLayout>} />
+        <Route path="/contactpage" element={<PublicLayout><ContactPage /></PublicLayout>} />
+        <Route path="/search" element={<PublicLayout><SearchPage /></PublicLayout>} />
+        <Route path="/subscribe" element={<PublicLayout><SubscribePage /></PublicLayout>} />
 
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        <Route path="/admin/login" element={<AdminLogin />} />
+
+        <Route path="/admin" element={
+          <ProtectedRoute>
+            <AdminLayout><AdminDashboard /></AdminLayout>
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/blogs" element={
+          <ProtectedRoute>
+            <AdminLayout><AdminBlogs /></AdminLayout>
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/blogs/new" element={
+          <ProtectedRoute>
+            <AdminLayout><AdminBlogEditor /></AdminLayout>
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/blogs/edit/:id" element={
+          <ProtectedRoute>
+            <AdminLayout><AdminBlogEditor /></AdminLayout>
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/categories" element={
+          <ProtectedRoute>
+            <AdminLayout><AdminCategories /></AdminLayout>
+          </ProtectedRoute>
+        } />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
   )
 }
 
+// 🌐 Main App (FIXED)
 export default function App() {
   return (
     <AuthProvider>
-      <AppRoutes />
+      <AppRoutes />   {/* ✅ Router hata diya */}
     </AuthProvider>
   )
 }
