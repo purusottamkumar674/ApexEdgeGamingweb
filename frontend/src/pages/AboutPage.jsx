@@ -3,7 +3,8 @@ import {
   ArrowRight, Sparkles, Zap, Award, Users, BookOpen,
   Heart, Globe, Compass, Coffee, Target, Rocket,
   CheckCircle2, Mail, Phone, MapPin, Clock,
-  Crown, Shield, Star, TrendingUp, Eye, MessageCircle
+  Crown, Shield, Star, TrendingUp, Eye, MessageCircle,
+  Quote, BadgeCheck, Infinity
 } from 'lucide-react'
 
 import { FaTwitter, FaLinkedin } from "react-icons/fa";
@@ -54,31 +55,49 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
       
-      {/* Hero Section - Premium About Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900">
-        {/* Animated Background */}
+      {/* Hero Section - Premium BIG Header */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 min-h-[70vh] flex items-center">
+        
+        {/* Animated Background Orbs - Larger */}
         <div className="absolute inset-0">
           <div className="absolute top-0 -right-40 w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-30 animate-pulse-slow"></div>
           <div className="absolute bottom-0 -left-40 w-96 h-96 bg-pink-500 rounded-full blur-3xl opacity-30 animate-pulse-slower"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500 rounded-full blur-3xl opacity-20 animate-pulse"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-500 rounded-full blur-3xl opacity-20 animate-pulse"></div>
+          <div className="absolute top-20 right-20 w-56 h-56 bg-yellow-500 rounded-full blur-3xl opacity-20 animate-float"></div>
+          <div className="absolute bottom-20 left-20 w-56 h-56 bg-cyan-500 rounded-full blur-3xl opacity-20 animate-float-delay"></div>
+          
+          {/* Grid Pattern Overlay */}
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%239C92AC%22 fill-opacity=%220.04%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-100"></div>
         </div>
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32 w-full">
           <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-5 py-2 mb-6 border border-white/20">
-              <Sparkles size={14} className="text-yellow-300" />
-              <span className="text-sm font-medium text-white">About ApexEdge Gaming</span>
+            {/* Premium Badge */}
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-6 py-2.5 mb-8 border border-white/20 shadow-lg animate-float">
+              <Sparkles size={16} className="text-yellow-300" />
+              <span className="text-base font-medium text-white">Welcome to ApexEdge Gaming</span>
             </div>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-white drop-shadow-2xl">
+            
+            {/* Main Heading - Larger */}
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold mb-8 text-white drop-shadow-2xl leading-tight">
               Our Story &{' '}
               <span className="bg-gradient-to-r from-yellow-300 via-pink-300 to-purple-300 bg-clip-text text-transparent">
                 Mission
               </span>
             </h1>
-            <p className="text-purple-100 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+            
+            {/* Description - Larger and clearer */}
+            <p className="text-purple-100 text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed">
               We're on a mission to democratize knowledge and connect curious minds through high-quality, 
               insightful content that inspires, educates, and empowers.
             </p>
+            
+            {/* Scroll Indicator */}
+            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce hidden md:block">
+              <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
+                <div className="w-1 h-2 bg-white/50 rounded-full mt-2 animate-scroll"></div>
+              </div>
+            </div>
           </div>
         </div>
         
@@ -91,7 +110,7 @@ export default function AboutPage() {
       </div>
 
       {/* Stats Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-10">
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((stat, idx) => (
             <div key={idx} className="group bg-white rounded-2xl p-6 text-center shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-100">
@@ -106,21 +125,21 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Our Story Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      {/* Our Story Section - Enhanced */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full px-4 py-1.5">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full px-4 py-2">
               <Compass size={14} className="text-purple-600" />
               <span className="text-purple-600 text-sm font-semibold">Our Journey</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">The Story Behind ApexEdge Gaming</h2>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">The Story Behind ApexEdge Gaming</h2>
             <p className="text-gray-600 text-lg leading-relaxed">
               ApexEdge Gaming was born from a simple idea: everyone deserves access to high-quality, 
               well-researched content that enriches their lives and expands their horizons.
             </p>
             <p className="text-gray-500 leading-relaxed">
-              What started as a small ApexEdge Gaming in 2020 has grown into a global community of writers, 
+              What started as a small blog in 2020 has grown into a global community of writers, 
               thinkers, and curious minds. Today, we're proud to reach over 50,000 readers monthly 
               with content that matters.
             </p>
@@ -148,12 +167,12 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Mission & Vision */}
-      <section className="bg-gradient-to-br from-purple-50 to-pink-50 py-20">
+      {/* Mission & Vision - Enhanced */}
+      <section className="bg-gradient-to-br from-purple-50 to-pink-50 py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-5">
+            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-5 shadow-lg">
                 <Target size={28} className="text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-3">Our Mission</h3>
@@ -162,8 +181,8 @@ export default function AboutPage() {
                 accessible, and engaging content that inspires action and sparks curiosity.
               </p>
             </div>
-            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-5">
+            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-5 shadow-lg">
                 <Rocket size={28} className="text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-3">Our Vision</h3>
@@ -176,14 +195,14 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Core Values */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full px-4 py-1.5 mb-4">
+      {/* Core Values - Enhanced */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full px-4 py-2 mb-4">
             <Star size={14} className="text-purple-600" />
             <span className="text-purple-600 text-sm font-semibold">Core Values</span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">What We Stand For</h2>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">What We Stand For</h2>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
             Our guiding principles that shape everything we do
           </p>
@@ -201,15 +220,15 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Journey Timeline */}
-      <section className="bg-gradient-to-br from-gray-50 to-white py-20">
+      {/* Journey Timeline - Enhanced */}
+      <section className="bg-gradient-to-br from-gray-50 to-white py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full px-4 py-1.5 mb-4">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full px-4 py-2 mb-4">
               <Clock size={14} className="text-purple-600" />
               <span className="text-purple-600 text-sm font-semibold">Our Journey</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Milestones & Achievements</h2>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Milestones & Achievements</h2>
             <p className="text-gray-500 text-lg max-w-2xl mx-auto">
               Key moments that shaped our story
             </p>
@@ -220,7 +239,7 @@ export default function AboutPage() {
               {milestones.map((milestone, idx) => (
                 <div key={idx} className={`relative flex flex-col md:flex-row items-center gap-6 ${idx % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                   <div className="flex-1 md:text-right">
-                    <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                       <div className="text-3xl font-bold text-purple-600 mb-2">{milestone.year}</div>
                       <h3 className="text-xl font-bold text-gray-900 mb-2">{milestone.title}</h3>
                       <p className="text-gray-500">{milestone.description}</p>
@@ -239,14 +258,14 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full px-4 py-1.5 mb-4">
+      {/* Team Section - Enhanced */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full px-4 py-2 mb-4">
             <Users size={14} className="text-purple-600" />
             <span className="text-purple-600 text-sm font-semibold">Meet the Team</span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">The Minds Behind ApexEdge Gaming</h2>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">The Minds Behind ApexEdge Gaming</h2>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
             Passionate individuals dedicated to bringing you the best content
           </p>
@@ -267,10 +286,10 @@ export default function AboutPage() {
                 <p className="text-purple-600 text-sm font-semibold mb-3">{member.role}</p>
                 <p className="text-gray-500 text-sm leading-relaxed mb-4">{member.bio}</p>
                 <div className="flex items-center justify-center gap-3">
-                  <a href={member.social.twitter} className="text-gray-400 hover:text-blue-400 transition-colors">
+                  <a href={member.social.twitter} className="text-gray-400 hover:text-blue-400 transition-colors transform hover:scale-110">
                     <FaTwitter size={18} />
                   </a>
-                  <a href={member.social.linkedin} className="text-gray-400 hover:text-blue-600 transition-colors">
+                  <a href={member.social.linkedin} className="text-gray-400 hover:text-blue-600 transition-colors transform hover:scale-110">
                     <FaLinkedin size={18} />
                   </a>
                 </div>
@@ -280,20 +299,20 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Newsletter CTA */}
-      <section className="bg-gradient-to-br from-gray-900 to-gray-800 py-20">
+      {/* Newsletter CTA - Enhanced */}
+      <section className="bg-gradient-to-br from-gray-900 to-gray-800 py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-3xl overflow-hidden shadow-2xl">
             <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1557683316-973673baf926?w=1600&q=80')] bg-cover bg-center mix-blend-overlay opacity-10"></div>
             <div className="absolute top-0 -right-32 w-64 h-64 bg-white rounded-full blur-3xl opacity-10 animate-pulse-slow"></div>
             <div className="absolute bottom-0 -left-32 w-64 h-64 bg-purple-300 rounded-full blur-3xl opacity-10 animate-pulse-slower"></div>
             
-            <div className="relative p-10 md:p-12 text-center">
-              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-5 py-2 mb-6">
+            <div className="relative p-12 md:p-16 text-center">
+              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-6 py-2.5 mb-6">
                 <Mail size={16} className="text-white" />
                 <span className="text-white text-sm font-semibold">Stay Connected</span>
               </div>
-              <h3 className="text-3xl md:text-4xl font-bold text-white mb-3">Join Our Community</h3>
+              <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">Join Our Community</h3>
               <p className="text-purple-100 text-base md:text-lg mb-8 max-w-md mx-auto">
                 Subscribe to our newsletter and never miss an update from us.
               </p>
@@ -334,6 +353,26 @@ export default function AboutPage() {
           50% { opacity: 0.25; transform: scale(1.2); }
         }
         
+        @keyframes float {
+          0%, 100% { transform: translateY(0) translateX(0); }
+          50% { transform: translateY(-20px) translateX(15px); }
+        }
+        
+        @keyframes float-delay {
+          0%, 100% { transform: translateY(0) translateX(0); }
+          50% { transform: translateY(-25px) translateX(-15px); }
+        }
+        
+        @keyframes scroll {
+          0% { transform: translateY(0); opacity: 1; }
+          100% { transform: translateY(10px); opacity: 0; }
+        }
+        
+        @keyframes bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(10px); }
+        }
+        
         .animate-pulse-slow {
           animation: pulse-slow 4s ease-in-out infinite;
         }
@@ -344,6 +383,22 @@ export default function AboutPage() {
         
         .animate-pulse {
           animation: pulse 3s ease-in-out infinite;
+        }
+        
+        .animate-float {
+          animation: float 8s ease-in-out infinite;
+        }
+        
+        .animate-float-delay {
+          animation: float-delay 10s ease-in-out infinite;
+        }
+        
+        .animate-scroll {
+          animation: scroll 1.5s ease-in-out infinite;
+        }
+        
+        .animate-bounce {
+          animation: bounce 2s ease-in-out infinite;
         }
       `}</style>
     </div>

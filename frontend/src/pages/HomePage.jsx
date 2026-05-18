@@ -131,10 +131,10 @@ export default function HomePage() {
   ]
 
   const recentActivities = [
-    { user: 'Alex Thompson', action: 'published', article: 'The Future of AI in 2024', time: '2 min ago', avatar: 'https://randomuser.me/api/portraits/men/11.jpg' },
-    { user: 'Maria Garcia', action: 'commented on', article: 'Web Development Trends', time: '15 min ago', avatar: 'https://randomuser.me/api/portraits/women/12.jpg' },
-    { user: 'David Kim', action: 'liked', article: 'UX Design Principles', time: '1 hour ago', avatar: 'https://randomuser.me/api/portraits/men/13.jpg' },
-    { user: 'Lisa Wang', action: 'shared', article: 'Startup Success Stories', time: '2 hours ago', avatar: 'https://randomuser.me/api/portraits/women/14.jpg' },
+    { user: 'Rahul Sharma', action: 'published', article: 'The Future of AI in 2024', time: '2 min ago', avatar: 'https://randomuser.me/api/portraits/men/11.jpg' },
+    { user: 'Priya Verma', action: 'commented on', article: 'Web Development Trends', time: '15 min ago', avatar: 'https://randomuser.me/api/portraits/women/12.jpg' },
+    { user: 'Amit Kumar', action: 'liked', article: 'UX Design Principles', time: '1 hour ago', avatar: 'https://randomuser.me/api/portraits/men/13.jpg' },
+    { user: 'Anamika Singh', action: 'shared', article: 'Startup Success Stories', time: '2 hours ago', avatar: 'https://randomuser.me/api/portraits/women/14.jpg' },
   ]
 
   return (
