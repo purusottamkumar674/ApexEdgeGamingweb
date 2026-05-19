@@ -14,7 +14,8 @@ app.use(cors({
     'http://localhost:3000',
     'http://localhost:5173',
     'https://apexedgegamingweb-1.onrender.com',
-    'https://apexedgegamingweb.onrender.com'
+    'https://apexedgegamingweb.onrender.com',
+    'https://apexedgegaming.com'
   ],
   credentials: true
 }));
