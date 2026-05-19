@@ -7,11 +7,8 @@ import {
   ArrowRight, TrendingUp, Sparkles, Zap, Award, 
   Users, BookOpen, Clock, ChevronRight, Flame, 
   Compass, Heart, Eye, Crown, Rocket, Target, 
-  CheckCircle2, Play, Gift, Mail, Shield, Star,
-  Calendar, MessageCircle, Share2, ThumbsUp,
-  Coffee, Globe, Menu, X, ChevronDown, MoveRight,
-  Quote, BadgeCheck, Infinity, Layers, BarChart3,
-  Grid3X3, List, Filter, Download, Bell, Wallet
+  CheckCircle2, Play, Mail, Shield, Star,
+  BadgeCheck, MoveRight
 } from 'lucide-react'
 
 export default function HomePage() {
@@ -21,11 +18,10 @@ export default function HomePage() {
   const [showCookieConsent, setShowCookieConsent] = useState(true)
   const [showNewsletterPopup, setShowNewsletterPopup] = useState(false)
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
-  const [scrolled, setScrolled] = useState(false)
-  const [activeTab, setActiveTab] = useState('featured')
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const heroRef = useRef(null)
 
+  // Interactive Hero Parallax Effect
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (heroRef.current) {
@@ -39,38 +35,36 @@ export default function HomePage() {
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
+  // Black Friday Sale Countdown (Fixed 3 Days)
   useEffect(() => {
     const targetDate = new Date()
     targetDate.setDate(targetDate.getDate() + 3)
     targetDate.setHours(23, 59, 59, 999)
+
     const interval = setInterval(() => {
-      const now = new Date()
-      const difference = targetDate - now
+      const difference = targetDate - new Date()
       if (difference <= 0) {
         clearInterval(interval)
         setCountdown({ days: 0, hours: 0, minutes: 0, seconds: 0 })
         return
       }
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24))
-      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))
-      const seconds = Math.floor((difference % (1000 * 60)) / 1000)
-      setCountdown({ days, hours, minutes, seconds })
+      setCountdown({
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((difference % (1000 * 60)) / 1000)
+      })
     }, 1000)
     return () => clearInterval(interval)
   }, [])
 
+  // Newsletter Trigger
   useEffect(() => {
     const timer = setTimeout(() => { setShowNewsletterPopup(true) }, 8000)
     return () => clearTimeout(timer)
   }, [])
 
-  useEffect(() => {
-    const handleScroll = () => { setScrolled(window.scrollY > 50) }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
+  // Fetch API Data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -78,10 +72,10 @@ export default function HomePage() {
           getBlogs({ limit: 6, page: 1 }),
           getFeaturedBlogs()
         ])
-        setBlogs(blogsRes.data.blogs)
-        setFeatured(featuredRes.data.blogs)
+        setBlogs(blogsRes.data.blogs || [])
+        setFeatured(featuredRes.data.blogs || [])
       } catch (err) {
-        console.error(err)
+        console.error("Error fetching homepage data:", err)
       } finally {
         setLoading(false)
       }
@@ -92,716 +86,423 @@ export default function HomePage() {
   const heroPost = featured[0] || blogs[0]
   const recentPosts = blogs.slice(0, 6)
 
+  // Static Data Packages
   const stats = [
-    { label: 'Active Readers', value: '50K+', icon: <Users size={22} />, color: 'from-violet-500 to-purple-600', trend: '+23%', bg: 'bg-violet-50' },
-    { label: 'Articles Published', value: '1,200+', icon: <BookOpen size={22} />, color: 'from-emerald-400 to-teal-600', trend: '+45', bg: 'bg-emerald-50' },
-    { label: 'Expert Writers', value: '150+', icon: <Award size={22} />, color: 'from-amber-400 to-orange-500', trend: '+12', bg: 'bg-amber-50' },
-    { label: 'Daily Readers', value: '10K+', icon: <Eye size={22} />, color: 'from-rose-400 to-pink-600', trend: '+18%', bg: 'bg-rose-50' },
+    { label: 'Active Readers', value: '50K+', icon: <Users size={20} />, color: 'from-violet-500 to-purple-600', trend: '+23%' },
+    { label: 'Articles Published', value: '1,200+', icon: <BookOpen size={20} />, color: 'from-emerald-400 to-teal-600', trend: '+45' },
+    { label: 'Expert Writers', value: '150+', icon: <Award size={20} />, color: 'from-amber-400 to-orange-500', trend: '+12' },
+    { label: 'Daily Readers', value: '10K+', icon: <Eye size={20} />, color: 'from-rose-400 to-pink-600', trend: '+18%' },
   ]
 
   const categories = [
-    { name: 'Technology', icon: '💻', color: 'from-violet-500 to-indigo-600', count: 234, description: 'Latest tech trends' },
-    { name: 'Lifestyle', icon: '🌿', color: 'from-emerald-400 to-teal-500', count: 156, description: 'Wellness & living' },
-    { name: 'Design', icon: '🎨', color: 'from-pink-400 to-rose-500', count: 98, description: 'Creative inspiration' },
-    { name: 'Business', icon: '📊', color: 'from-amber-400 to-orange-500', count: 87, description: 'Entrepreneurship' },
-    { name: 'Marketing', icon: '📈', color: 'from-cyan-400 to-blue-500', count: 76, description: 'Growth strategies' },
+    { name: 'Technology', icon: '💻', count: 234, description: 'Latest tech trends' },
+    { name: 'Lifestyle', icon: '🌿', count: 156, description: 'Wellness & living' },
+    { name: 'Design', icon: '🎨', count: 98, description: 'Creative inspiration' },
+    { name: 'Business', icon: '📊', count: 87, description: 'Entrepreneurship' },
+    { name: 'Marketing', icon: '📈', count: 76, description: 'Growth strategies' },
   ]
 
   const testimonials = [
-    { name: 'Sarah Johnson', role: 'Senior Content Strategist', text: 'The quality of content here is absolutely phenomenal. I\'ve learned more in 3 months than 3 years elsewhere.', rating: 5, avatar: 'https://randomuser.me/api/portraits/women/1.jpg', date: '2 days ago', company: 'Google' },
-    { name: 'Michael Chen', role: 'Lead Developer', text: 'Best platform for discovering insightful articles. The community is incredibly supportive and knowledgeable.', rating: 5, avatar: 'https://randomuser.me/api/portraits/men/2.jpg', date: '5 days ago', company: 'Microsoft' },
-    { name: 'Emma Davis', role: 'UX Director', text: 'Love the community and the amazing content shared every day. It\'s become my daily go-to for inspiration.', rating: 5, avatar: 'https://randomuser.me/api/portraits/women/3.jpg', date: '1 week ago', company: 'Apple' },
+    { name: 'Sarah Johnson', role: 'Senior Content Strategist', text: "The quality of content here is absolutely phenomenal. I've learned more in 3 months than 3 years elsewhere.", avatar: 'https://randomuser.me/api/portraits/women/1.jpg', company: 'Google' },
+    { name: 'Michael Chen', role: 'Lead Developer', text: 'Best platform for discovering insightful articles. The community is incredibly supportive and knowledgeable.', avatar: 'https://randomuser.me/api/portraits/men/2.jpg', company: 'Microsoft' },
+    { name: 'Emma Davis', role: 'UX Director', text: "Love the community and the amazing content shared every day. It's become my daily go-to for inspiration.", avatar: 'https://randomuser.me/api/portraits/women/3.jpg', company: 'Apple' },
   ]
 
   const trendingTopics = [
-    { name: 'Artificial Intelligence', posts: 234, trend: '+45%', icon: '🤖', color: 'from-violet-500 to-purple-600' },
-    { name: 'Web Development', posts: 189, trend: '+32%', icon: '🌐', color: 'from-cyan-400 to-blue-500' },
-    { name: 'UI/UX Design', posts: 156, trend: '+28%', icon: '🎨', color: 'from-pink-400 to-rose-500' },
-    { name: 'Startup Culture', posts: 98, trend: '+67%', icon: '🚀', color: 'from-amber-400 to-orange-500' },
-    { name: 'Digital Marketing', posts: 76, trend: '+41%', icon: '📢', color: 'from-emerald-400 to-teal-500' },
+    { name: 'Artificial Intelligence', posts: 234, trend: '+45%', icon: '🤖' },
+    { name: 'Web Development', posts: 189, trend: '+32%', icon: '🌐' },
+    { name: 'UI/UX Design', posts: 156, trend: '+28%', icon: '🎨' },
+    { name: 'Startup Culture', posts: 98, trend: '+67%', icon: '🚀' },
+    { name: 'Digital Marketing', posts: 76, trend: '+41%', icon: '📢' },
   ]
 
   const featuredBrands = [
-    { name: 'Microsoft', logo: 'https://cdn-icons-png.flaticon.com/512/732/732221.png', color: 'from-blue-600 to-cyan-600' },
-    { name: 'Google', logo: 'https://cdn-icons-png.flaticon.com/512/732/732222.png', color: 'from-red-500 to-yellow-500' },
-    { name: 'Amazon', logo: 'https://cdn-icons-png.flaticon.com/512/732/732224.png', color: 'from-orange-500 to-yellow-500' },
-    { name: 'Apple', logo: 'https://cdn-icons-png.flaticon.com/512/732/732233.png', color: 'from-gray-700 to-gray-900' },
-    { name: 'Meta', logo: 'https://cdn-icons-png.flaticon.com/512/5968/5968764.png', color: 'from-blue-700 to-indigo-700' },
-    { name: 'Netflix', logo: 'https://cdn-icons-png.flaticon.com/512/5977/5977590.png', color: 'from-red-600 to-red-800' },
+    { name: 'Microsoft', logo: 'https://cdn-icons-png.flaticon.com/512/732/732221.png' },
+    { name: 'Google', logo: 'https://cdn-icons-png.flaticon.com/512/732/732222.png' },
+    { name: 'Amazon', logo: 'https://cdn-icons-png.flaticon.com/512/732/732224.png' },
+    { name: 'Apple', logo: 'https://cdn-icons-png.flaticon.com/512/732/732233.png' },
+    { name: 'Meta', logo: 'https://cdn-icons-png.flaticon.com/512/5968/5968764.png' },
+    { name: 'Netflix', logo: 'https://cdn-icons-png.flaticon.com/512/5977/5977590.png' },
   ]
 
   const recentActivities = [
-    { user: 'Rahul Sharma', action: 'published', article: 'The Future of AI in 2024', time: '2 min ago', avatar: 'https://randomuser.me/api/portraits/men/11.jpg' },
+    { user: 'Rahul Sharma', action: 'published', article: 'The Future of AI in 2026', time: '2 min ago', avatar: 'https://randomuser.me/api/portraits/men/11.jpg' },
     { user: 'Priya Verma', action: 'commented on', article: 'Web Development Trends', time: '15 min ago', avatar: 'https://randomuser.me/api/portraits/women/12.jpg' },
     { user: 'Amit Kumar', action: 'liked', article: 'UX Design Principles', time: '1 hour ago', avatar: 'https://randomuser.me/api/portraits/men/13.jpg' },
     { user: 'Anamika Singh', action: 'shared', article: 'Startup Success Stories', time: '2 hours ago', avatar: 'https://randomuser.me/api/portraits/women/14.jpg' },
   ]
 
   return (
-    <div className="min-h-screen" style={{ background: '#ffffff', fontFamily: "'Sora', 'DM Sans', sans-serif" }}>
-
-      {/* ─── Google Fonts ─── */}
+    <div className="min-h-screen bg-white text-slate-900 select-none antialiased selection:bg-violet-500/10 selection:text-violet-900 font-sans">
+      
+      {/* Dynamic Keyframe Injection */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap');
-
-        :root {
-          --accent: #7c3aed;
-          --accent2: #db2777;
-          --accent3: #10b981;
-          --gold: #fbbf24;
-          --bg: #ffffff;
-          --bg2: #f8fafc;
-          --bg3: #f1f5f9;
-          --border: rgba(124,58,237,0.15);
-          --text: #0f172a;
-          --muted: #64748b;
-        }
-
-        * { box-sizing: border-box; }
-
-        body { margin: 0; background: var(--bg); }
-
-        ::selection { background: rgba(124,58,237,0.15); color: #4c1d95; }
-
-        /* ── Scrollbar ── */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-        /* ── Responsive Base ── */
-        @media (max-width: 768px) {
-          ::-webkit-scrollbar { width: 4px; }
-        }
-
-        /* ── Keyframes ── */
-        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes glow { 0%,100% { opacity:.15; } 50% { opacity:.25; } }
-        @keyframes orbit { from { transform: rotate(0deg) translateX(140px) rotate(0deg); } to { transform: rotate(360deg) translateX(140px) rotate(-360deg); } }
-        @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
-        @keyframes floatY { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-18px); } }
-        @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
-        @keyframes pulseRing { 0%{transform:scale(1);opacity:.6} 100%{transform:scale(2.2);opacity:0} }
-        @keyframes slideInLeft { from{opacity:0;transform:translateX(-30px)} to{opacity:1;transform:translateX(0)} }
-        @keyframes scaleIn { from{opacity:0;transform:scale(.92)} to{opacity:1;transform:scale(1)} }
-        @keyframes grain { 0%,100%{transform:translate(0,0)} 25%{transform:translate(-2%,-3%)} 50%{transform:translate(3%,2%)} 75%{transform:translate(-1%,3%)} }
-
-        .anim-fade-up { animation: fadeUp .7s ease-out both; }
-        .anim-fade-up-1 { animation: fadeUp .7s .1s ease-out both; }
-        .anim-fade-up-2 { animation: fadeUp .7s .2s ease-out both; }
-        .anim-fade-up-3 { animation: fadeUp .7s .3s ease-out both; }
-        .anim-fade-up-4 { animation: fadeUp .7s .4s ease-out both; }
-        .anim-float { animation: floatY 7s ease-in-out infinite; }
-        .anim-float-delay { animation: floatY 9s 2s ease-in-out infinite; }
-
-        /* ── Shimmer text ── */
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .mono-font { font-family: 'JetBrains Mono', monospace; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .animate-marquee { animation: marquee 30s linear infinite; }
+        .animate-marquee:hover { animation-play-state: paused; }
+        @keyframes float-slow { 0%, 100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-20px) scale(1.05); } }
+        .animate-float { animation: float-slow 8s ease-in-out infinite; }
         .shimmer-text {
-          background: linear-gradient(90deg, #7c3aed 0%, #db2777 25%, #10b981 50%, #db2777 75%, #7c3aed 100%);
-          background-size: 200% auto;
+          background: linear-gradient(90deg, #7c3aed, #db2777, #10b981, #7c3aed);
+          background-size: 300% auto;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
-          background-clip: text;
-          animation: shimmer 4s linear infinite;
+          animation: shimmer-anim 6s linear infinite;
         }
-
-        /* ── Glass card (light mode) ── */
-        .glass {
-          background: rgba(255,255,255,0.8);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          border: 1px solid rgba(124,58,237,0.12);
-        }
-
-        @media (max-width: 768px) {
-          .glass { backdrop-filter: blur(10px); }
-        }
-
-        .glass-hover {
-          transition: all .35s cubic-bezier(.22,1,.36,1);
-        }
-        .glass-hover:hover {
-          background: rgba(124,58,237,0.04);
-          border-color: rgba(124,58,237,0.25);
-          transform: translateY(-6px);
-          box-shadow: 0 24px 64px rgba(124,58,237,0.1);
-        }
-
-        /* ── Glow button ── */
-        .btn-glow {
-          position: relative;
-          overflow: hidden;
-          transition: all .3s ease;
-          cursor: pointer;
-        }
-        .btn-glow::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, rgba(255,255,255,.2) 0%, transparent 60%);
-          opacity: 0;
-          transition: opacity .3s;
-        }
-        .btn-glow:hover::before { opacity: 1; }
-        .btn-glow:hover { transform: translateY(-2px); box-shadow: 0 16px 48px rgba(124,58,237,0.25); }
-
-        /* ── Noise overlay ── */
-        .noise::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.02'/%3E%3C/svg%3E");
-          opacity: .5;
-          pointer-events: none;
-          animation: grain 8s steps(10) infinite;
-        }
-
-        /* ── Stat card glow on hover ── */
-        .stat-card:hover .stat-icon { box-shadow: 0 0 32px rgba(124,58,237,0.3); }
-
-        /* ── Category card ── */
-        .cat-card { transition: all .4s cubic-bezier(.22,1,.36,1); }
-        .cat-card:hover { transform: translateY(-10px) scale(1.02); }
-        .cat-card:hover .cat-emoji { transform: scale(1.2) rotate(-5deg); }
-        .cat-emoji { transition: transform .4s cubic-bezier(.34,1.56,.64,1); display: inline-block; }
-
-        @media (max-width: 640px) {
-          .cat-card:hover { transform: translateY(-5px) scale(1.01); }
-        }
-
-        /* ── Blog card ── */
-        .blog-card { transition: all .4s cubic-bezier(.22,1,.36,1); }
-        .blog-card:hover { transform: translateY(-8px); }
-        .blog-card:hover .blog-img { transform: scale(1.08); }
-        .blog-img { transition: transform .6s cubic-bezier(.22,1,.36,1); }
-
-        /* ── Testimonial ── */
-        .testi-card:hover { border-color: rgba(124,58,237,0.3); box-shadow: 0 20px 60px rgba(124,58,237,0.08); }
-        .testi-card { transition: all .35s ease; }
-
-        /* ── Line clamp ── */
-        .clamp-2 { display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden; }
-        .clamp-3 { display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden; }
-
-        /* ── Marquee ── */
-        .marquee-track { animation: marquee 24s linear infinite; }
-        .marquee-track:hover { animation-play-state: paused; }
-
-        @media (max-width: 768px) {
-          .marquee-track { animation-duration: 18s; }
-        }
-
-        /* ── Pill badge ── */
-        .pill {
-          display: inline-flex; align-items: center; gap: 6px;
-          background: rgba(124,58,237,0.08);
-          border: 1px solid rgba(124,58,237,0.2);
-          border-radius: 100px;
-          padding: 6px 16px;
-          font-size: 11px; font-weight: 700; letter-spacing: .08em;
-          color: #7c3aed; text-transform: uppercase;
-        }
-
-        @media (max-width: 640px) {
-          .pill { padding: 4px 12px; font-size: 9px; gap: 4px; }
-        }
-
-        /* ── Section heading ── */
-        .section-title {
-          font-size: clamp(1.75rem, 5vw, 3.5rem);
-          font-weight: 800;
-          letter-spacing: -.03em;
-          color: #0f172a;
-          line-height: 1.2;
-        }
-
-        /* ── Countdown box ── */
-        .cd-box {
-          display: flex; flex-direction: column; align-items: center;
-          background: rgba(0,0,0,0.05);
-          border: 1px solid rgba(0,0,0,0.08);
-          border-radius: 12px;
-          padding: 8px 14px;
-          min-width: 56px;
-        }
-        .cd-num { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500; color: #0f172a; line-height: 1; }
-        .cd-label { font-size: 9px; letter-spacing: .1em; color: #64748b; text-transform: uppercase; margin-top: 3px; }
-
-        @media (max-width: 768px) {
-          .cd-box { padding: 5px 8px; min-width: 42px; }
-          .cd-num { font-size: 16px; }
-          .cd-label { font-size: 7px; }
-        }
-
-        @media (max-width: 640px) {
-          .cd-box { padding: 3px 6px; min-width: 36px; }
-          .cd-num { font-size: 12px; }
-        }
-
-        /* ── Live dot ── */
-        .live-dot { position: relative; width: 10px; height: 10px; }
-        .live-dot::before { content:''; position:absolute;inset:0; background:#10b981; border-radius:50%; z-index:1; }
-        .live-dot::after { content:''; position:absolute;inset:0; background:#10b981; border-radius:50%; animation: pulseRing 1.6s ease-out infinite; }
-
-        /* ── Trending rank ── */
-        .rank-num {
-          font-family: 'DM Mono', monospace;
-          font-size: 13px;
-          color: #94a3b8;
-          font-weight: 500;
-          min-width: 24px;
-        }
-
-        /* ── Input focus ── */
-        .neo-input {
-          background: #f8fafc;
-          border: 1px solid #e2e8f0;
-          color: #0f172a;
-          border-radius: 14px;
-          padding: 14px 20px;
-          outline: none;
-          font-size: 15px;
-          transition: border-color .25s, box-shadow .25s;
-          width: 100%;
-          font-family: inherit;
-        }
-        .neo-input::placeholder { color: #94a3b8; }
-        .neo-input:focus { border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,0.1); }
-
-        @media (max-width: 768px) {
-          .neo-input { padding: 10px 16px; font-size: 14px; }
-        }
-
-        /* ── Scroll caret ── */
-        @keyframes caretBounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
-        .scroll-caret { animation: caretBounce 2s ease-in-out infinite; }
-
-        @media (max-width: 768px) {
-          .scroll-caret { bottom: 16px; }
-        }
-
-        /* ── Cookie ── */
-        @keyframes slideUp { from{transform:translateY(100%);opacity:0} to{transform:translateY(0);opacity:1} }
-        .cookie-bar { animation: slideUp .5s cubic-bezier(.22,1,.36,1); }
-
-        @media (max-width: 640px) {
-          .cookie-bar { left: 16px; right: 16px; bottom: 16px; max-width: none; }
-        }
-
-        /* ── Popup ── */
-        @keyframes popIn { from{opacity:0;transform:scale(.88)} to{opacity:1;transform:scale(1)} }
-        .popup-box { animation: popIn .4s cubic-bezier(.34,1.56,.64,1); }
-
-        @media (max-width: 640px) {
-          .popup-box { margin: 16px; padding: 24px; }
-        }
-
-        /* ── Hero gradient orb ── */
-        .orb {
-          position: absolute; border-radius: 50%;
-          filter: blur(100px); pointer-events: none;
-        }
-
-        @media (max-width: 768px) {
-          .orb { filter: blur(60px); }
-        }
-
-        /* ── Brand strip ── */
-        .brand-strip {
-          background: #f8fafc;
-          border-top: 1px solid #e2e8f0;
-          border-bottom: 1px solid #e2e8f0;
-        }
+        @keyframes shimmer-anim { 0% { background-position: 0% center; } 100% { background-position: 300% center; } }
       `}</style>
 
-      {/* ═══════════════════════════════════════════════════════
-          ANNOUNCEMENT BAR - RESPONSIVE
-      ═══════════════════════════════════════════════════════ */}
-      <div style={{ background: 'linear-gradient(90deg, #6d28d9 0%, #db2777 50%, #ea580c 100%)', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' fill-opacity='.04'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/g%3E%3C/svg%3E\")" }} />
-        <div style={{ maxWidth: '100%', margin: '0 auto', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', position: 'relative' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
-            <span style={{ background: 'rgba(255,255,255,.2)', borderRadius: '50%', width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>🔥</span>
-            <span style={{ color: '#fff', fontSize: 'clamp(11px, 3vw, 13px)', fontWeight: 700, textAlign: 'center' }}>BLACK FRIDAY SALE — Up to 70% off + Free updates</span>
+      {/* ─── ANNOUNCEMENT BAR ─── */}
+      <div className="relative overflow-hidden bg-gradient-to-r from-violet-700 via-pink-600 to-orange-600 text-white shadow-md">
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
+        <div className="max-w-7xl mx-auto px-4 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-3 relative z-10 text-center sm:text-left">
+          <div className="flex items-center gap-2">
+            <span className="bg-white/20 p-1 rounded-full text-xs animate-bounce">🔥</span>
+            <p className="text-xs sm:text-sm font-bold tracking-wide">BLACK FRIDAY SALE — Up to 70% off + Elite Rewards</p>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
-            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'center' }}>
-              {[['days', countdown.days], ['hrs', countdown.hours], ['min', countdown.minutes], ['sec', countdown.seconds]].map(([l, v]) => (
-                <div key={l} className="cd-box" style={{ background: 'rgba(255,255,255,.15)', borderColor: 'rgba(255,255,255,.2)' }}>
-                  <span className="cd-num" style={{ color: '#fff' }}>{String(v).padStart(2, '0')}</span>
-                  <span className="cd-label" style={{ color: 'rgba(255,255,255,.7)' }}>{l}</span>
+          <div className="flex items-center gap-4 flex-wrap justify-center">
+            <div className="flex gap-1.5">
+              {[['D', countdown.days], ['H', countdown.hours], ['M', countdown.minutes], ['S', countdown.seconds]].map(([label, val]) => (
+                <div key={label} className="bg-white/15 border border-white/20 rounded-md px-2 py-0.5 min-w-[36px] text-center">
+                  <div className="text-xs font-bold mono-font leading-tight">{String(val).padStart(2, '0')}</div>
+                  <div className="text-[8px] tracking-wider opacity-70 font-semibold">{label}</div>
                 </div>
               ))}
             </div>
-            <button className="btn-glow" style={{ background: '#fff', color: '#6d28d9', border: 'none', borderRadius: 100, padding: '6px 16px', fontWeight: 800, fontSize: 'clamp(10px, 3vw, 12px)', cursor: 'pointer', whiteSpace: 'nowrap' }}>
-              CLAIM →
+            <button className="bg-white text-violet-700 hover:bg-violet-50 transition-all shadow-lg text-[11px] font-extrabold px-3.5 py-1.5 rounded-full tracking-wider transform hover:-translate-y-0.5">
+              CLAIM OFFER →
             </button>
           </div>
         </div>
       </div>
 
-      {/* ═══════════════════════════════════════════════════════
-          HERO SECTION - RESPONSIVE
-      ═══════════════════════════════════════════════════════ */}
-      <section ref={heroRef} className="noise" style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', overflow: 'hidden', background: '#f8fafc' }}>
+      {/* ─── HERO SECTION ─── */}
+      <section ref={heroRef} className="relative min-h-[90vh] flex items-center overflow-hidden bg-slate-50/50 border-b border-slate-200/60 py-12 lg:py-0">
+        {/* Interactive Smooth Blur Background Orbs */}
+        <div className="absolute rounded-full pointer-events-none filter blur-[100px] transition-all duration-300 opacity-20 bg-gradient-to-br from-violet-600 to-indigo-600"
+          style={{ width: '600px', height: '600px', left: `${mousePosition.x * 0.2 - 10}%`, top: `${mousePosition.y * 0.2 - 10}%` }} />
+        <div className="absolute right-[-5%] bottom-[10%] w-[450px] height-[450px] rounded-full pointer-events-none filter blur-[120px] opacity-15 bg-pink-500 animate-float" />
 
-        <div className="orb" style={{ width: 'min(700px, 80vw)', height: 'min(700px, 80vw)', background: 'radial-gradient(circle, rgba(124,58,237,.15), transparent 70%)', left: `${mousePosition.x * 0.3 - 10}%`, top: `${mousePosition.y * 0.3 - 10}%`, transition: 'left .1s, top .1s' }} />
-        <div className="orb anim-float" style={{ width: 'min(400px, 60vw)', height: 'min(400px, 60vw)', background: 'radial-gradient(circle, rgba(219,39,119,.1), transparent 70%)', right: '-5%', bottom: '10%' }} />
-        <div className="orb anim-float-delay" style={{ width: 'min(300px, 50vw)', height: 'min(300px, 50vw)', background: 'radial-gradient(circle, rgba(16,185,129,.08), transparent 70%)', left: '5%', bottom: '20%' }} />
-
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(124,58,237,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(124,58,237,.03) 1px, transparent 1px)', backgroundSize: '80px 80px', pointerEvents: 'none' }} />
-
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: 'clamp(60px, 10vw, 120px) 20px clamp(40px, 8vw, 80px)', position: 'relative', zIndex: 10, width: '100%' }}>
-          <div style={{ display: 'flex', flexDirection: window.innerWidth < 1024 ? 'column' : 'row', gap: 'clamp(40px, 6vw, 80px)', alignItems: 'center' }}>
-
-            {/* ── Left ── */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(20px, 4vw, 32px)', flex: 1 }}>
-              <div className="anim-fade-up">
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(16,185,129,.1)', border: '1px solid rgba(16,185,129,.25)', borderRadius: 100, padding: '6px 14px' }}>
-                  <div className="live-dot" />
-                  <span style={{ color: '#10b981', fontSize: 'clamp(9px, 3vw, 11px)', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>50,000+ Active Members</span>
-                </div>
+        <div className="max-w-7xl mx-auto px-4 w-full relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            
+            {/* Hero Content Left */}
+            <div className="lg:col-span-7 flex flex-col gap-6 text-center lg:text-left items-center lg:items-start">
+              <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-full px-3.5 py-1.5 shadow-sm">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span className="text-emerald-700 text-xs font-bold tracking-wider uppercase">50,000+ Active Explorers</span>
               </div>
 
-              <div className="anim-fade-up-1">
-                <h1 style={{ fontSize: 'clamp(2.5rem, 8vw, 5.5rem)', fontWeight: 900, lineHeight: 1.15, letterSpacing: '-.04em', margin: 0, color: '#0f172a', textAlign: window.innerWidth < 1024 ? 'center' : 'left' }}>
-                  ApexEdge<br />
-                  <span className="shimmer-text">Gaming</span>
-                </h1>
-              </div>
+              <h1 className="text-4xl sm:text-6xl xl:text-7xl font-extrabold tracking-tight text-slate-900 leading-[1.1]">
+                ApexEdge <br />
+                <span className="shimmer-text">Gaming Ecosystem</span>
+              </h1>
 
-              <p className="anim-fade-up-2" style={{ color: '#475569', fontSize: 'clamp(1rem, 4vw, 1.125rem)', lineHeight: 1.6, margin: 0, maxWidth: 500, textAlign: window.innerWidth < 1024 ? 'center' : 'left', marginLeft: 'auto', marginRight: 'auto' }}>
-                Fresh insights, ideas, and stories — updated daily by our team of expert writers.
-                Join a community of 50,000+ curious minds.
+              <p className="text-base sm:text-lg text-slate-600 max-w-xl leading-relaxed">
+                Unlock top-tier strategies, developer updates, and immersive gaming tech stories. Managed and verified by global expert enthusiasts.
               </p>
 
-              <div className="anim-fade-up-3" style={{ display: 'flex', gap: 12, justifyContent: window.innerWidth < 1024 ? 'center' : 'flex-start', flexWrap: 'wrap' }}>
-                <Link to="/blog" className="btn-glow" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'linear-gradient(135deg, #7c3aed, #db2777)', color: '#fff', padding: 'clamp(10px, 3vw, 16px) clamp(20px, 5vw, 32px)', borderRadius: 16, fontWeight: 700, fontSize: 'clamp(13px, 4vw, 16px)', textDecoration: 'none' }}>
-                  Start Reading <MoveRight size={16} />
+              <div className="flex flex-wrap gap-3.5 justify-center lg:justify-start w-full sm:w-auto">
+                <Link to="/blog" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-pink-600 text-white font-semibold px-7 py-3.5 rounded-2xl shadow-xl shadow-violet-600/20 hover:shadow-violet-600/30 transition-all transform hover:-translate-y-0.5">
+                  Start Learning <MoveRight size={18} />
                 </Link>
-                <Link to="/about" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(0,0,0,.04)', border: '1px solid #e2e8f0', color: '#1e293b', padding: 'clamp(10px, 3vw, 16px) clamp(20px, 5vw, 28px)', borderRadius: 16, fontWeight: 600, fontSize: 'clamp(13px, 4vw, 15px)', textDecoration: 'none' }}>
-                  <Play size={14} /> Watch Demo
+                <Link to="/about" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-700 font-medium px-6 py-3.5 rounded-2xl shadow-sm hover:bg-slate-50 transition-all">
+                  <Play size={16} className="text-violet-600 fill-violet-600" /> Watch Dashboard Tour
                 </Link>
               </div>
 
-              <div className="anim-fade-up-4" style={{ display: 'flex', alignItems: 'center', justifyContent: window.innerWidth < 1024 ? 'center' : 'flex-start', gap: 'clamp(16px, 4vw, 24px)', flexWrap: 'wrap', paddingTop: 8 }}>
-                <div style={{ display: 'flex' }}>
+              {/* Social Proof */}
+              <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 border-t border-slate-200/80 w-full justify-center lg:justify-start">
+                <div className="flex -space-x-2.5">
                   {[1, 2, 3, 4].map((i) => (
-                    <img key={i} src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i}.jpg`} alt="" style={{ width: 'clamp(36px, 8vw, 44px)', height: 'clamp(36px, 8vw, 44px)', borderRadius: '50%', border: '2px solid rgba(124,58,237,.2)', marginLeft: i === 1 ? 0 : -10, objectFit: 'cover' }} />
+                    <img key={i} className="w-10 h-10 rounded-full border-2 border-white object-cover" src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i + 5}.jpg`} alt="User avatar" />
                   ))}
                 </div>
-                <div style={{ borderLeft: '1px solid #e2e8f0', paddingLeft: 'clamp(12px, 3vw, 20px)' }}>
-                  <div style={{ color: '#0f172a', fontWeight: 800, fontSize: 'clamp(18px, 5vw, 22px)' }}>2,500+</div>
-                  <div style={{ color: '#64748b', fontSize: 'clamp(10px, 3vw, 13px)' }}>New readers this week</div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                  {[...Array(5)].map((_, i) => <Star key={i} size={window.innerWidth < 640 ? 10 : 14} style={{ fill: '#fbbf24', color: '#fbbf24' }} />)}
-                  <span style={{ color: '#0f172a', fontWeight: 700, marginLeft: 4, fontSize: 'clamp(12px, 4vw, 14px)' }}>4.9</span>
+                <div className="text-center sm:text-left">
+                  <div className="text-lg font-bold text-slate-950 flex items-center justify-center sm:justify-start gap-1">
+                    <span>2,500+ Joining Weekly</span>
+                    <div className="flex text-amber-400 ml-1">
+                      {[...Array(5)].map((_, i) => <Star key={i} size={13} className="fill-current" />)}
+                    </div>
+                  </div>
+                  <div className="text-xs text-slate-500 font-medium tracking-wide">Rated 4.9/5 by industry content engineers</div>
                 </div>
               </div>
             </div>
 
-            {/* ── Right — Hero post card ── */}
+            {/* Hero Main Card Right (Fixed JS logic bug with true Tailwind responsive scaling) */}
             {heroPost && (
-              <div style={{ flex: 1, maxWidth: window.innerWidth < 1024 ? '100%' : '50%' }}>
-                <Link to={`/blog/${heroPost.slug}`} style={{ position: 'relative', display: 'block', textDecoration: 'none' }}>
-                  <div style={{ position: 'absolute', inset: -1, background: 'linear-gradient(135deg, rgba(124,58,237,.3), rgba(219,39,119,.2))', borderRadius: 28, filter: 'blur(20px)', opacity: .4, zIndex: -1 }} />
-                  <div style={{ borderRadius: 28, overflow: 'hidden', position: 'relative', background: '#fff', border: '1px solid #e2e8f0', cursor: 'pointer', transition: 'transform .5s cubic-bezier(.22,1,.36,1)' }}
-                    onMouseEnter={e => e.currentTarget.style.transform = window.innerWidth > 768 ? 'scale(1.02) rotateY(-3deg)' : 'scale(1.01)'}
-                    onMouseLeave={e => e.currentTarget.style.transform = 'scale(1) rotateY(0deg)'}>
-                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,.85) 0%, rgba(0,0,0,.4) 50%, transparent 100%)', zIndex: 1 }} />
-                    <img src={heroPost.coverImage || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&q=80'} alt={heroPost.title} style={{ width: '100%', height: 'clamp(280px, 50vw, 480px)', objectFit: 'cover', display: 'block' }} />
-                    <div style={{ position: 'absolute', top: 'clamp(12px, 3vw, 20px)', left: 'clamp(12px, 3vw, 20px)', zIndex: 2, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: 'clamp(9px, 3vw, 11px)', fontWeight: 700, color: '#fff', background: 'linear-gradient(135deg,#7c3aed,#db2777)', padding: '4px 12px', borderRadius: 100 }}>{heroPost.category?.name || 'Featured'}</span>
-                      <span style={{ fontSize: 'clamp(9px, 3vw, 11px)', fontWeight: 600, color: '#fbbf24', background: 'rgba(251,191,36,.15)', border: '1px solid rgba(251,191,36,.3)', padding: '4px 12px', borderRadius: 100 }}>👑 Editor's Pick</span>
+              <div className="lg:col-span-5 w-full relative group">
+                <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-pink-600 rounded-[2rem] blur-2xl opacity-20 group-hover:opacity-25 transition-opacity" />
+                <Link to={`/blog/${heroPost.slug}`} className="block relative bg-white border border-slate-200/80 rounded-[2rem] p-3 shadow-xl overflow-hidden hover:border-slate-300 transition-all duration-300 transform group-hover:scale-[1.01]">
+                  <div className="relative rounded-[1.6rem] overflow-hidden aspect-[4/3] sm:aspect-[16/10] lg:aspect-square xl:aspect-[4/3]">
+                    <img src={heroPost.coverImage || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&q=80'} alt={heroPost.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent" />
+                    
+                    <div className="absolute top-4 left-4 flex gap-2">
+                      <span className="bg-violet-600 text-white font-bold text-[10px] uppercase tracking-wider px-3 py-1 rounded-full shadow-md">{heroPost.category?.name || 'Featured'}</span>
+                      <span className="bg-white/10 backdrop-blur-md text-amber-300 border border-white/10 font-bold text-[10px] px-3 py-1 rounded-full shadow-md flex items-center gap-1">👑 Editor's Choice</span>
                     </div>
-                    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 'clamp(16px, 4vw, 28px)', zIndex: 2 }}>
-                      <h3 style={{ color: '#fff', fontSize: 'clamp(1rem, 4vw, 1.375rem)', fontWeight: 800, margin: '0 0 8px', lineHeight: 1.3 }} className="clamp-2">{heroPost.title}</h3>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'rgba(255,255,255,.7)', fontSize: 'clamp(10px, 3vw, 13px)', flexWrap: 'wrap' }}>
-                        <img src={heroPost.author?.avatar || 'https://randomuser.me/api/portraits/men/10.jpg'} alt="" style={{ width: 'clamp(20px, 5vw, 28px)', height: 'clamp(20px, 5vw, 28px)', borderRadius: '50%', border: '2px solid rgba(255,255,255,.3)' }} />
-                        <span>{heroPost.author?.name}</span>
-                        <span style={{ opacity: .5 }}>·</span>
+
+                    <div className="absolute bottom-0 inset-x-0 p-6 text-white">
+                      <h3 className="text-xl sm:text-2xl font-bold tracking-tight line-clamp-2 mb-3 group-hover:text-violet-200 transition-colors">{heroPost.title}</h3>
+                      <div className="flex items-center gap-3 text-xs text-slate-300">
+                        <img src={heroPost.author?.avatar || 'https://randomuser.me/api/portraits/men/10.jpg'} alt="" className="w-7 h-7 rounded-full border border-white/20" />
+                        <span className="font-medium text-white">{heroPost.author?.name}</span>
+                        <span>•</span>
                         <span>{format(new Date(heroPost.createdAt), 'MMM d, yyyy')}</span>
-                        <span style={{ opacity: .5 }}>·</span>
-                        <span>{heroPost.readTime} min read</span>
+                        <span>•</span>
+                        <span className="bg-white/10 px-2 py-0.5 rounded text-[10px] tracking-wide">{heroPost.readTime} Min Read</span>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Floating badge */}
-                  <div style={{ position: 'absolute', top: -12, right: -12, background: 'linear-gradient(135deg, #fbbf24, #f59e0b)', borderRadius: 100, padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 4, boxShadow: '0 8px 32px rgba(251,191,36,.3)', zIndex: 10 }}>
-                    <Crown size={11} style={{ color: '#fff' }} />
-                    <span style={{ color: '#fff', fontSize: 'clamp(9px, 3vw, 11px)', fontWeight: 800, letterSpacing: '.06em' }}>FEATURED</span>
                   </div>
                 </Link>
               </div>
             )}
-          </div>
-        </div>
 
-        {/* Scroll caret - Responsive */}
-        <div className="scroll-caret" style={{ position: 'absolute', bottom: 'clamp(16px, 4vw, 32px)', left: '50%', zIndex: 10, transform: 'translateX(-50%)' }}>
-          <div style={{ width: 'clamp(28px, 6vw, 36px)', height: 'clamp(42px, 8vw, 56px)', border: '2px solid #cbd5e1', borderRadius: 100, display: 'flex', justifyContent: 'center', paddingTop: 'clamp(8px, 2vw, 10px)' }}>
-            <div style={{ width: 3, height: 'clamp(8px, 2vw, 12px)', background: '#7c3aed', borderRadius: 4, animation: 'scaleIn 2s ease-in-out infinite' }} />
           </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-          BRAND MARQUEE - RESPONSIVE
-      ═══════════════════════════════════════════════════════ */}
-      <div className="brand-strip" style={{ padding: 'clamp(12px, 3vw, 20px) 0', overflow: 'hidden' }}>
-        <div className="marquee-track" style={{ display: 'flex', gap: 'clamp(30px, 5vw, 60px)', width: 'max-content' }}>
+      {/* ─── BRANDS LOGO SCROLLER ─── */}
+      <div className="border-b border-slate-200/80 bg-slate-50/40 py-5 overflow-hidden relative">
+        <div className="flex whitespace-nowrap animate-marquee">
           {[...featuredBrands, ...featuredBrands].map((brand, idx) => (
-            <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 8, opacity: .6, transition: 'opacity .3s', cursor: 'default', whiteSpace: 'nowrap' }}
-              onMouseEnter={e => e.currentTarget.style.opacity = '1'}
-              onMouseLeave={e => e.currentTarget.style.opacity = '.6'}>
-              <div style={{ width: 'clamp(24px, 5vw, 32px)', height: 'clamp(24px, 5vw, 32px)', background: `linear-gradient(135deg, #7c3aed, #db2777)`, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 5 }}>
-                <img src={brand.logo} alt={brand.name} style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            <div key={idx} className="inline-flex items-center gap-3 mx-8 opacity-40 hover:opacity-90 transition-opacity cursor-pointer">
+              <div className="w-8 h-8 bg-slate-950 rounded-lg p-1.5 flex items-center justify-center">
+                <img src={brand.logo} alt={brand.name} className="w-full h-full object-contain invert brightness-0" />
               </div>
-              <span style={{ color: '#475569', fontWeight: 600, fontSize: 'clamp(11px, 3vw, 14px)' }}>{brand.name}</span>
+              <span className="text-slate-800 font-bold tracking-wider text-sm">{brand.name.toUpperCase()}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ═══════════════════════════════════════════════════════
-          STATS SECTION - RESPONSIVE GRID
-      ═══════════════════════════════════════════════════════ */}
-      <section style={{ maxWidth: 1280, margin: '0 auto', padding: 'clamp(40px, 8vw, 80px) 20px clamp(20px, 5vw, 40px)' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: 'clamp(16px, 3vw, 20px)' }}>
+      {/* ─── LIVE METRICS & STREAM SECTION ─── */}
+      <section className="max-w-7xl mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {stats.map((stat, idx) => (
-            <div key={idx} className="glass glass-hover stat-card" style={{ borderRadius: 24, padding: 'clamp(20px, 4vw, 28px)', position: 'relative', overflow: 'hidden', background: '#fff' }}>
-              <div style={{ position: 'absolute', top: -30, right: -30, width: 120, height: 120, borderRadius: '50%', background: `linear-gradient(135deg, ${stat.color.replace('from-', '').split(' ')[0]}, transparent)`, opacity: .06, filter: 'blur(20px)' }} />
-              <div className="stat-icon" style={{ width: 'clamp(44px, 8vw, 52px)', height: 'clamp(44px, 8vw, 52px)', borderRadius: 16, background: `linear-gradient(135deg, ${stat.color.replace('from-', '#').replace(' to-', ', #').replace(/-\d+/g, '')})`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
-                <div style={{ color: '#fff' }}>{stat.icon}</div>
+            <div key={idx} className="group relative bg-white border border-slate-200/70 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all hover:border-slate-300">
+              <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${stat.color} text-white flex items-center justify-center mb-4 shadow-sm group-hover:scale-105 transition-transform`}>
+                {stat.icon}
               </div>
-              <div style={{ fontSize: 'clamp(1.75rem, 6vw, 2.375rem)', fontWeight: 900, color: '#0f172a', letterSpacing: '-.03em', lineHeight: 1 }}>{stat.value}</div>
-              <div style={{ color: '#64748b', fontSize: 'clamp(11px, 3vw, 13px)', fontWeight: 500, marginTop: 4 }}>{stat.label}</div>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 12, background: 'rgba(16,185,129,.08)', border: '1px solid rgba(16,185,129,.2)', borderRadius: 100, padding: '3px 8px' }}>
-                <TrendingUp size={10} style={{ color: '#10b981' }} />
-                <span style={{ color: '#10b981', fontSize: 10, fontWeight: 700 }}>{stat.trend}</span>
-                <span style={{ color: '#10b981', fontSize: 9, opacity: .7, display: 'inline-block' }}>vs last month</span>
+              <div className="text-3xl font-extrabold text-slate-900 tracking-tight">{stat.value}</div>
+              <div className="text-sm font-medium text-slate-500 mt-1">{stat.label}</div>
+              <div className="inline-flex items-center gap-1 mt-3 bg-emerald-50 border border-emerald-100 rounded-full px-2 py-0.5 text-[11px] font-bold text-emerald-600">
+                <TrendingUp size={12} /> {stat.trend} <span className="opacity-60 font-normal">vs last month</span>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Live Activity Feed - Responsive */}
-        <div className="glass" style={{ borderRadius: 'clamp(20px, 4vw, 24px)', padding: 'clamp(16px, 4vw, 28px)', marginTop: 'clamp(16px, 4vw, 24px)', background: '#fff', border: '1px solid rgba(124,58,237,.1)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, paddingBottom: 12, borderBottom: '1px solid #e2e8f0', flexWrap: 'wrap' }}>
-            <div className="live-dot" />
-            <span style={{ color: '#7c3aed', fontSize: 'clamp(9px, 3vw, 11px)', fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase' }}>Live Community Feed</span>
-            <span style={{ color: '#64748b', fontSize: 'clamp(10px, 3vw, 12px)', marginLeft: 'auto' }}>Real-time</span>
+        {/* Community Activity Board */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 mt-6 shadow-sm">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 mb-4 border-b border-slate-100">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-violet-500"></span>
+              </span>
+              <h4 className="text-xs font-extrabold uppercase tracking-widest text-violet-700">Live Infrastructure Activities</h4>
+            </div>
+            <span className="text-xs text-slate-400 tracking-wide font-medium">Refreshed real-time</span>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            {recentActivities.map((activity, idx) => (
-              <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 3vw, 12px)', padding: '8px 12px', borderRadius: 14, flexWrap: 'wrap' }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(124,58,237,.04)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                <img src={activity.avatar} alt="" style={{ width: 'clamp(32px, 6vw, 38px)', height: 'clamp(32px, 6vw, 38px)', borderRadius: '50%', border: '2px solid rgba(124,58,237,.2)', objectFit: 'cover' }} />
-                <div style={{ flex: 1, fontSize: 'clamp(11px, 3vw, 13px)' }}>
-                  <span style={{ fontWeight: 700, color: '#0f172a' }}>{activity.user}</span>
-                  <span style={{ color: '#64748b', margin: '0 4px' }}>{activity.action}</span>
-                  <span style={{ color: '#7c3aed', fontWeight: 600 }}>"{activity.article}"</span>
+          <div className="flex flex-col gap-2">
+            {recentActivities.map((act, idx) => (
+              <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors gap-2">
+                <div className="flex items-center gap-3">
+                  <img src={act.avatar} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-slate-100" />
+                  <p className="text-sm text-slate-600">
+                    <strong className="text-slate-900 font-semibold">{act.user}</strong> <span className="text-slate-400 font-medium">{act.action}</span> <span className="text-violet-600 font-medium">"{act.article}"</span>
+                  </p>
                 </div>
-                <span style={{ color: '#64748b', fontSize: 'clamp(9px, 2.5vw, 11px)' }}>{activity.time}</span>
+                <span className="text-xs text-slate-400 self-end sm:self-auto">{act.time}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-          RECENT BLOGS - RESPONSIVE GRID
-      ═══════════════════════════════════════════════════════ */}
-      <section style={{ maxWidth: 1280, margin: '0 auto', padding: 'clamp(40px, 6vw, 60px) 20px' }}>
-        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 'clamp(32px, 6vw, 48px)', flexWrap: 'wrap', gap: 16 }}>
+      {/* ─── FRESH BLOGS GRID ─── */}
+      <section className="max-w-7xl mx-auto px-4 py-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-10">
           <div>
-            <div className="pill" style={{ marginBottom: 12 }}>
-              <Zap size={12} /> Latest Articles
+            <div className="inline-flex items-center gap-1.5 bg-violet-50 border border-violet-100 rounded-full px-3 py-1 text-xs font-bold text-violet-700 mb-2">
+              <Zap size={12} className="fill-current" /> LATEST INSIGHTS
             </div>
-            <h2 className="section-title">Fresh from ApexEdgeGaming</h2>
-            <p style={{ color: '#64748b', fontSize: 'clamp(13px, 4vw, 16px)', marginTop: 8 }}>Discover our newest stories and expert insights</p>
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950">Fresh Production Matrix</h2>
           </div>
-          <Link to="/blog" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#7c3aed', fontWeight: 700, fontSize: 'clamp(13px, 4vw, 15px)', textDecoration: 'none', background: 'rgba(124,58,237,.08)', border: '1px solid rgba(124,58,237,.2)', borderRadius: 12, padding: '10px 18px', whiteSpace: 'nowrap' }}>
-            Browse All <ArrowRight size={14} />
+          <Link to="/blog" className="inline-flex items-center gap-1.5 text-xs font-bold bg-slate-100 border border-slate-200/60 hover:bg-slate-200/60 text-slate-800 px-4 py-2.5 rounded-xl transition-all whitespace-nowrap">
+            Browse Archive <ArrowRight size={14} />
           </Link>
         </div>
 
         {loading ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: 'clamp(20px, 4vw, 24px)' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="glass" style={{ borderRadius: 24, overflow: 'hidden', height: 360, background: '#fff' }}>
-                <div style={{ height: 200, background: 'linear-gradient(135deg, #f1f5f9, #e2e8f0)', animation: 'glow 2s ease-in-out infinite' }} />
-                <div style={{ padding: 20 }}>
-                  <div style={{ height: 16, borderRadius: 8, background: '#e2e8f0', width: '75%', marginBottom: 12 }} />
-                  <div style={{ height: 12, borderRadius: 8, background: '#f1f5f9', width: '50%', marginBottom: 8 }} />
-                  <div style={{ height: 40, borderRadius: 8, background: '#f1f5f9' }} />
-                </div>
+              <div key={i} className="border border-slate-200 rounded-2xl p-4 bg-white animate-pulse">
+                <div className="bg-slate-200 rounded-xl aspect-[16/10] w-full mb-4" />
+                <div className="h-4 bg-slate-200 rounded w-1/3 mb-2" />
+                <div className="h-6 bg-slate-200 rounded w-3/4 mb-3" />
+                <div className="h-4 bg-slate-200 rounded w-full" />
               </div>
             ))}
           </div>
         ) : recentPosts.length > 0 ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))', gap: 'clamp(20px, 4vw, 24px)' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {recentPosts.map(blog => <BlogCard key={blog._id} blog={blog} />)}
           </div>
         ) : (
-          <div style={{ textAlign: 'center', padding: '60px 20px', color: '#64748b' }}>
-            <BookOpen size={48} style={{ opacity: .2, margin: '0 auto 16px', display: 'block' }} />
-            <p>No ApexEdgeGaming articles yet. Check back soon!</p>
+          <div className="text-center py-20 bg-slate-50 border border-slate-200 rounded-2xl">
+            <BookOpen size={40} className="mx-auto text-slate-300 mb-3" />
+            <p className="text-slate-500 font-medium">No system articles found. Re-indexing soon!</p>
           </div>
         )}
 
         {recentPosts.length > 0 && (
-          <div style={{ textAlign: 'center', marginTop: 'clamp(32px, 6vw, 48px)' }}>
-            <Link to="/blog" className="btn-glow" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'linear-gradient(135deg, #7c3aed, #db2777)', color: '#fff', padding: 'clamp(12px, 3vw, 16px) clamp(28px, 6vw, 36px)', borderRadius: 16, fontWeight: 700, fontSize: 'clamp(13px, 4vw, 16px)', textDecoration: 'none' }}>
+          <div className="text-center mt-12">
+            <Link to="/blog" className="inline-flex items-center gap-2 bg-slate-950 text-white font-bold px-7 py-3.5 rounded-xl shadow-lg hover:bg-slate-900 transition-all transform hover:-translate-y-0.5">
               Load More Articles <ArrowRight size={16} />
             </Link>
           </div>
         )}
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-          CATEGORIES - RESPONSIVE GRID
-      ═══════════════════════════════════════════════════════ */}
-      <section style={{ background: '#f8fafc', borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0', padding: 'clamp(40px, 8vw, 80px) 0' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 20px' }}>
-          <div style={{ textAlign: 'center', marginBottom: 'clamp(32px, 6vw, 52px)' }}>
-            <div className="pill" style={{ marginBottom: 16 }}>
-              <Compass size={12} /> Explore Categories
+      {/* ─── SYSTEM CATEGORIES ─── */}
+      <section className="bg-slate-50 border-y border-slate-200/80 py-16 mt-12">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center max-w-xl mx-auto mb-12">
+            <div className="inline-flex items-center gap-1 bg-pink-50 border border-pink-100 rounded-full px-3 py-1 text-xs font-bold text-pink-700 mb-2">
+              <Compass size={12} /> TAXONOMY CHANNELS
             </div>
-            <h2 className="section-title">Browse by Topic</h2>
-            <p style={{ color: '#64748b', fontSize: 'clamp(14px, 4vw, 17px)', marginTop: 12, maxWidth: 480, margin: '12px auto 0' }}>Find articles that match your interests</p>
+            <h2 className="text-3xl font-extrabold tracking-tight text-slate-950">Segmented Categorization</h2>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 160px), 1fr))', gap: 'clamp(16px, 3vw, 18px)' }}>
-            {categories.map((cat, idx) => (
-              <Link key={cat.name} to={`/category/${cat.name.toLowerCase()}`} className="glass cat-card" style={{ borderRadius: 24, padding: 'clamp(24px, 5vw, 36px) 16px', textAlign: 'center', textDecoration: 'none', display: 'block', position: 'relative', overflow: 'hidden', background: '#fff' }}>
-                <div style={{ position: 'absolute', inset: 0, opacity: 0, background: 'linear-gradient(135deg, rgba(124,58,237,.04), rgba(219,39,119,.02))', transition: 'opacity .4s' }} />
-                <div style={{ fontSize: 'clamp(32px, 8vw, 44px)', marginBottom: 12 }} className="cat-emoji">{cat.icon}</div>
-                <div style={{ color: '#0f172a', fontWeight: 800, fontSize: 'clamp(15px, 4vw, 17px)', marginBottom: 4 }}>{cat.name}</div>
-                <div style={{ color: '#64748b', fontSize: 'clamp(10px, 3vw, 12px)', marginBottom: 6 }}>{cat.description}</div>
-                <div style={{ color: '#7c3aed', fontSize: 'clamp(10px, 3vw, 11px)', fontWeight: 700, background: 'rgba(124,58,237,.08)', borderRadius: 100, padding: '3px 10px', display: 'inline-block' }}>{cat.count} Articles</div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            {categories.map((cat) => (
+              <Link key={cat.name} to={`/category/${cat.name.toLowerCase()}`} className="group bg-white border border-slate-200/70 p-6 rounded-2xl text-center shadow-sm hover:shadow-md hover:border-slate-300 transition-all transform hover:-translate-y-1 block">
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-300 inline-block">{cat.icon}</div>
+                <h4 className="text-slate-900 font-bold text-base tracking-tight">{cat.name}</h4>
+                <p className="text-xs text-slate-400 mt-1 line-clamp-1">{cat.description}</p>
+                <span className="inline-block text-[10px] font-extrabold text-violet-600 bg-violet-50 border border-violet-100 rounded-full px-2.5 py-0.5 mt-4 group-hover:bg-violet-600 group-hover:text-white transition-colors">
+                  {cat.count} Papers
+                </span>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-          TRENDING + COMMUNITY - RESPONSIVE STACK
-      ═══════════════════════════════════════════════════════ */}
-      <section style={{ maxWidth: 1280, margin: '0 auto', padding: 'clamp(40px, 8vw, 80px) 20px' }}>
-        <div style={{ display: 'flex', flexDirection: window.innerWidth < 1024 ? 'column' : 'row', gap: 'clamp(32px, 5vw, 48px)', alignItems: 'start' }}>
-
-          {/* Trending */}
-          <div style={{ flex: window.innerWidth < 1024 ? 'auto' : 1, width: '100%' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(12px, 3vw, 14px)', marginBottom: 'clamp(28px, 5vw, 36px)', flexWrap: 'wrap' }}>
-              <div style={{ width: 'clamp(40px, 8vw, 48px)', height: 'clamp(40px, 8vw, 48px)', borderRadius: 16, background: 'linear-gradient(135deg, #f59e0b, #ef4444)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Flame size={window.innerWidth < 640 ? 16 : 20} style={{ color: '#fff' }} />
+      {/* ─── TRENDING AND SIGNUP ARCHITECTURE ─── */}
+      <section className="max-w-7xl mx-auto px-4 py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          
+          {/* Trending Panel Left */}
+          <div className="lg:col-span-7 w-full">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-red-500 text-white flex items-center justify-center shadow-md">
+                <Flame size={18} className="fill-current" />
               </div>
               <div>
-                <h2 style={{ color: '#0f172a', fontSize: 'clamp(1.25rem, 5vw, 1.625rem)', fontWeight: 800, margin: 0 }}>Trending Topics</h2>
-                <p style={{ color: '#64748b', fontSize: 'clamp(11px, 3vw, 13px)', margin: 0 }}>Most popular discussions right now</p>
+                <h3 className="text-xl font-extrabold text-slate-950 tracking-tight">Trending Discussions</h3>
+                <p className="text-xs text-slate-400 font-medium">Most indexed concepts today</p>
               </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+
+            <div className="flex flex-col gap-3">
               {trendingTopics.map((topic, idx) => (
-                <Link key={idx} to={`/topic/${topic.name.toLowerCase()}`} className="glass glass-hover" style={{ display: 'flex', alignItems: 'center', gap: 'clamp(12px, 3vw, 16px)', padding: 'clamp(12px, 3vw, 18px) clamp(16px, 4vw, 22px)', borderRadius: 18, textDecoration: 'none', background: '#fff', flexWrap: 'wrap' }}>
-                  <span className="rank-num">0{idx + 1}</span>
-                  <div style={{ width: 'clamp(40px, 8vw, 48px)', height: 'clamp(40px, 8vw, 48px)', borderRadius: 14, background: 'rgba(124,58,237,.05)', border: '1px solid rgba(124,58,237,.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'clamp(20px, 5vw, 24px)' }}>
-                    {topic.icon}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ color: '#0f172a', fontWeight: 700, fontSize: 'clamp(13px, 4vw, 15px)', marginBottom: 4 }}>{topic.name}</div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                      <span style={{ color: '#64748b', fontSize: 'clamp(10px, 3vw, 12px)' }}>{topic.posts} articles</span>
-                      <div style={{ width: 3, height: 3, background: '#cbd5e1', borderRadius: '50%' }} />
-                      <span style={{ color: '#10b981', fontSize: 'clamp(10px, 3vw, 12px)', fontWeight: 700 }}>↑ {topic.trend}</span>
+                <Link key={idx} to={`/topic/${topic.name.toLowerCase()}`} className="group flex items-center justify-between p-4 bg-white border border-slate-200/70 rounded-xl shadow-sm hover:border-slate-300 transition-all">
+                  <div className="flex items-center gap-4">
+                    <span className="mono-font text-xs font-bold text-slate-300 group-hover:text-violet-500 transition-colors">0{idx + 1}</span>
+                    <div className="w-10 h-10 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-xl">{topic.icon}</div>
+                    <div>
+                      <h5 className="text-sm font-bold text-slate-950 group-hover:text-violet-600 transition-colors">{topic.name}</h5>
+                      <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-400 font-medium">
+                        <span>{topic.posts} articles</span>
+                        <span>•</span>
+                        <span className="text-emerald-600 font-bold">↑ {topic.trend}</span>
+                      </div>
                     </div>
                   </div>
-                  <ChevronRight size={14} style={{ color: '#94a3b8' }} />
+                  <ChevronRight size={16} className="text-slate-400 group-hover:translate-x-0.5 transition-transform" />
                 </Link>
               ))}
             </div>
           </div>
 
-          {/* Community card */}
-          <div style={{ width: window.innerWidth < 1024 ? '100%' : '380px', flexShrink: 0 }}>
-            <div className="glass" style={{ borderRadius: 28, padding: 'clamp(24px, 5vw, 32px)', border: '1px solid rgba(124,58,237,.15)', position: 'sticky', top: 100, overflow: 'hidden', background: '#fff' }}>
-              <div style={{ position: 'absolute', top: -60, right: -60, width: 200, height: 200, background: 'radial-gradient(circle, rgba(124,58,237,.08), transparent 70%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
-              <div style={{ position: 'relative' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(12px, 3vw, 14px)', marginBottom: 20 }}>
-                  <div style={{ width: 'clamp(44px, 8vw, 52px)', height: 'clamp(44px, 8vw, 52px)', borderRadius: 18, background: 'linear-gradient(135deg, #7c3aed, #db2777)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Target size={window.innerWidth < 640 ? 18 : 22} style={{ color: '#fff' }} />
-                  </div>
-                  <div>
-                    <div style={{ color: '#0f172a', fontWeight: 800, fontSize: 'clamp(1rem, 4vw, 1.125rem)' }}>Join the Community</div>
-                    <div style={{ color: '#10b981', fontSize: 'clamp(10px, 3vw, 12px)', fontWeight: 600 }}>1,200+ members online</div>
-                  </div>
+          {/* Premium Sign-up Sidebar Right */}
+          <div className="lg:col-span-5 w-full lg:sticky lg:top-8">
+            <div className="relative bg-white border border-slate-200 rounded-3xl p-6 shadow-xl overflow-hidden">
+              <div className="absolute -right-12 -top-12 w-44 h-44 rounded-full filter blur-3xl opacity-10 bg-violet-600" />
+              
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-violet-600 to-pink-600 text-white flex items-center justify-center shadow-lg shadow-violet-600/10">
+                  <Target size={20} />
                 </div>
-
-                <p style={{ color: '#64748b', fontSize: 'clamp(13px, 3.5vw, 14px)', lineHeight: 1.6, marginBottom: 22 }}>Connect with like-minded writers and readers. Share your ideas, get feedback, and grow together.</p>
-
-                {/* Avatars */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20, flexWrap: 'wrap' }}>
-                  <div style={{ display: 'flex' }}>
-                    {[1, 2, 3, 4].map((i) => (
-                      <img key={i} src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i + 20}.jpg`} alt="" style={{ width: 'clamp(32px, 6vw, 38px)', height: 'clamp(32px, 6vw, 38px)', borderRadius: '50%', border: '2px solid rgba(124,58,237,.2)', marginLeft: i === 1 ? 0 : -8, objectFit: 'cover' }} />
-                    ))}
-                    <div style={{ width: 'clamp(32px, 6vw, 38px)', height: 'clamp(32px, 6vw, 38px)', borderRadius: '50%', background: 'rgba(124,58,237,.1)', border: '2px solid rgba(124,58,237,.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: -8 }}>
-                      <span style={{ color: '#7c3aed', fontSize: 'clamp(8px, 2.5vw, 10px)', fontWeight: 800 }}>+2k</span>
-                    </div>
-                  </div>
-                  <span style={{ color: '#64748b', fontSize: 'clamp(10px, 3vw, 12px)' }}>and many more...</span>
+                <div>
+                  <h4 className="text-base font-extrabold text-slate-950">Sync Collective Intel</h4>
+                  <p className="text-xs font-bold text-emerald-600">1,200+ Nodes Interactive</p>
                 </div>
-
-                {/* Progress bar */}
-                <div style={{ marginBottom: 22 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, flexWrap: 'wrap', gap: 6 }}>
-                    <span style={{ color: '#64748b', fontSize: 'clamp(10px, 3vw, 12px)' }}>Community goal</span>
-                    <span style={{ color: '#7c3aed', fontSize: 'clamp(10px, 3vw, 12px)', fontWeight: 700 }}>78% full</span>
-                  </div>
-                  <div style={{ height: 6, borderRadius: 100, background: '#e2e8f0' }}>
-                    <div style={{ height: '100%', width: '78%', borderRadius: 100, background: 'linear-gradient(90deg, #7c3aed, #db2777)', boxShadow: '0 0 12px rgba(124,58,237,.3)' }} />
-                  </div>
-                </div>
-
-                <button className="btn-glow" style={{ width: '100%', background: 'linear-gradient(135deg, #7c3aed, #db2777)', color: '#fff', border: 'none', borderRadius: 16, padding: 'clamp(12px, 3vw, 16px)', fontWeight: 800, fontSize: 'clamp(13px, 4vw, 15px)', cursor: 'pointer' }}>
-                  Join Now — It's Free →
-                </button>
               </div>
+
+              <p className="text-sm text-slate-500 leading-relaxed mb-5">
+                Join our premium open network cluster. Write papers, get algorithmic code optimization reviews, and receive peer feedbacks instantly.
+              </p>
+
+              {/* Progress Tracker */}
+              <div className="mb-6 bg-slate-50 border border-slate-100 p-3.5 rounded-xl">
+                <div className="flex justify-between text-xs font-bold mb-1.5">
+                  <span className="text-slate-500">Core Network Cap</span>
+                  <span className="text-violet-600 font-mono">78% Indexed</span>
+                </div>
+                <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-violet-600 to-pink-600 rounded-full" style={{ width: '78%' }} />
+                </div>
+              </div>
+
+              <button className="w-full bg-gradient-to-r from-violet-600 to-pink-600 hover:opacity-95 transition-opacity text-white text-xs font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-violet-600/15 tracking-wide uppercase">
+                Establish Free Authorization →
+              </button>
             </div>
           </div>
+
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-          NEWSLETTER CTA - RESPONSIVE
-      ═══════════════════════════════════════════════════════ */}
-      <section style={{ maxWidth: 1280, margin: '0 auto', padding: '0 20px clamp(40px, 8vw, 80px)' }}>
-        <div style={{ position: 'relative', borderRadius: 'clamp(24px, 5vw, 32px)', overflow: 'hidden', background: 'linear-gradient(135deg, #ede9fe 0%, #fce7f3 40%, #fed7aa 100%)', border: '1px solid rgba(124,58,237,.2)' }}>
-          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(https://images.unsplash.com/photo-1557683316-973673baf926?w=1600&q=80)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: .05 }} />
-          <div className="orb" style={{ width: 400, height: 400, background: 'radial-gradient(circle, rgba(124,58,237,.2), transparent 70%)', right: '-10%', top: '-30%' }} />
-          <div className="orb" style={{ width: 300, height: 300, background: 'radial-gradient(circle, rgba(219,39,119,.15), transparent 70%)', left: '-5%', bottom: '-20%' }} />
+      {/* ─── NEWSLETTER SUBSCRIPTION CTA ─── */}
+      <section className="max-w-7xl mx-auto px-4 pb-16">
+        <div className="relative rounded-[2.5rem] overflow-hidden bg-slate-950 text-white border border-slate-800 p-8 sm:p-12 lg:p-16 text-center shadow-2xl">
+          <div className="absolute inset-0 bg-cover bg-center opacity-5 mix-blend-overlay" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1557683316-973673baf926?w=1600&q=80)' }} />
+          <div className="absolute right-[-10%] top-[-20%] w-[400px] h-[400px] bg-violet-600/10 rounded-full blur-[100px]" />
+          <div className="absolute left-[-5%] bottom-[-20%] w-[300px] h-[300px] bg-pink-600/10 rounded-full blur-[80px]" />
 
-          <div style={{ position: 'relative', padding: 'clamp(40px, 6vw, 72px) clamp(20px, 5vw, 48px)', textAlign: 'center' }}>
-            <div className="pill" style={{ marginBottom: 'clamp(16px, 4vw, 24px)', background: 'rgba(124,58,237,.1)', borderColor: 'rgba(124,58,237,.25)' }}>
-              <Rocket size={12} /> Limited Time Offer
+          <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center gap-4">
+            <div className="inline-flex items-center gap-1 bg-white/10 border border-white/10 rounded-full px-3 py-1 text-[11px] font-bold tracking-widest uppercase text-pink-300">
+              <Rocket size={12} /> ENTERPRISE CHANNEL
             </div>
-            <h3 style={{ fontSize: 'clamp(1.5rem, 6vw, 3rem)', fontWeight: 900, color: '#0f172a', margin: '0 0 16px', letterSpacing: '-.04em' }}>Join Our Premium Newsletter</h3>
-            <p style={{ color: '#475569', fontSize: 'clamp(14px, 4vw, 17px)', maxWidth: 500, margin: '0 auto 32px', lineHeight: 1.6 }}>Get exclusive content, early access to articles, and special benefits.</p>
-            <div style={{ display: 'flex', gap: 12, justifyContent: 'center', maxWidth: 480, margin: '0 auto 24px', flexWrap: 'wrap' }}>
-              <input type="email" placeholder="Enter your email address" className="neo-input" style={{ flex: 1, minWidth: 200 }} />
-              <button className="btn-glow" style={{ background: 'linear-gradient(135deg, #7c3aed, #db2777)', color: '#fff', border: 'none', borderRadius: 14, padding: 'clamp(10px, 3vw, 14px) clamp(20px, 5vw, 28px)', fontWeight: 700, fontSize: 'clamp(13px, 4vw, 15px)', cursor: 'pointer', whiteSpace: 'nowrap' }}>
-                Subscribe Free <ArrowRight size={14} />
+            <h3 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">Subscribe to Premium Pipeline</h3>
+            <p className="text-slate-400 text-sm sm:text-base max-w-md leading-relaxed">
+              Get highly classified weekly insights, tech optimization logs, and priority community updates directly inside your inbox.
+            </p>
+
+            <form onSubmit={e => e.preventDefault()} className="w-full max-w-md flex flex-col sm:flex-row gap-2 mt-4">
+              <input type="email" placeholder="Secure email vector address" className="bg-slate-900 border border-slate-800 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-violet-500 w-full placeholder:text-slate-600 font-medium transition-colors" />
+              <button className="bg-white text-slate-950 font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl hover:bg-slate-100 transition-colors whitespace-nowrap shadow-md">
+                Subscribe Vector
               </button>
-            </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 'clamp(16px, 4vw, 24px)' }}>
-              {['No spam, ever', 'Unsubscribe anytime', '100% free forever'].map(t => (
-                <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#64748b', fontSize: 'clamp(11px, 3vw, 13px)' }}>
-                  <CheckCircle2 size={12} style={{ color: '#10b981' }} />
-                  <span>{t}</span>
+            </form>
+
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-6 text-xs text-slate-500 font-medium">
+              {['Zero Spam Policy', 'Revoke Anytime', '100% Free Ecosystem'].map(text => (
+                <div key={text} className="flex items-center gap-1.5">
+                  <CheckCircle2 size={12} className="text-emerald-500" />
+                  <span>{text}</span>
                 </div>
               ))}
             </div>
@@ -809,110 +510,80 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-          TESTIMONIALS - RESPONSIVE GRID
-      ═══════════════════════════════════════════════════════ */}
-      <section style={{ position: 'relative', padding: 'clamp(40px, 8vw, 80px) 20px', overflow: 'hidden', background: '#f8fafc' }}>
-        <div className="orb" style={{ width: 400, height: 400, background: 'radial-gradient(circle, rgba(124,58,237,.08), transparent 70%)', left: '-5%', top: '10%' }} />
-        <div className="orb" style={{ width: 300, height: 300, background: 'radial-gradient(circle, rgba(219,39,119,.06), transparent 70%)', right: '-5%', bottom: '10%' }} />
-
-        <div style={{ maxWidth: 1280, margin: '0 auto', position: 'relative', zIndex: 5 }}>
-          <div style={{ textAlign: 'center', marginBottom: 'clamp(40px, 6vw, 56px)' }}>
-            <div className="pill" style={{ marginBottom: 16, background: 'rgba(219,39,119,.08)', borderColor: 'rgba(219,39,119,.2)', color: '#db2777' }}>
-              <Heart size={12} /> Testimonials
+      {/* ─── TESTIMONIALS ARCHITECTURE ─── */}
+      <section className="bg-slate-50 border-t border-slate-200/80 py-20 px-4 relative overflow-hidden">
+        <div className="absolute left-[-5%] top-[10%] w-96 h-96 bg-violet-200/40 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="text-center max-w-xl mx-auto mb-16">
+            <div className="inline-flex items-center gap-1.5 bg-pink-50 border border-pink-100 rounded-full px-3 py-1 text-xs font-bold text-pink-700 mb-2">
+              <Heart size={12} className="fill-current" /> GLOBAL ECOSYSTEM REVIEWS
             </div>
-            <h2 className="section-title">What Our Readers Say</h2>
-            <p style={{ color: '#64748b', fontSize: 'clamp(14px, 4vw, 17px)', marginTop: 12 }}>Join thousands of satisfied readers who love ApexEdgeGaming</p>
+            <h2 className="text-3xl font-extrabold tracking-tight text-slate-950">Peer Validation Metrics</h2>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: 'clamp(20px, 4vw, 24px)' }}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {testimonials.map((t, idx) => (
-              <div key={idx} className="glass testi-card" style={{ borderRadius: 24, padding: 'clamp(20px, 5vw, 32px)', position: 'relative', overflow: 'hidden', background: '#fff' }}>
-                <div style={{ fontSize: 'clamp(60px, 10vw, 80px)', lineHeight: 1, color: 'rgba(124,58,237,.06)', fontFamily: 'Georgia, serif', position: 'absolute', top: 10, right: 20, userSelect: 'none' }}>"</div>
-                <div style={{ display: 'flex', gap: 2, marginBottom: 14 }}>
-                  {[...Array(t.rating)].map((_, i) => <Star key={i} size={12} style={{ fill: '#fbbf24', color: '#fbbf24' }} />)}
+              <div key={idx} className="bg-white border border-slate-200/80 p-6 sm:p-8 rounded-2xl shadow-sm relative group hover:border-slate-300 transition-all">
+                <span className="text-6xl text-slate-100 font-serif absolute top-4 right-6 pointer-events-none select-none">“</span>
+                <div className="flex text-amber-400 gap-0.5 mb-4">
+                  {[...Array(5)].map((_, i) => <Star key={i} size={11} className="fill-current" />)}
                 </div>
-                <p style={{ color: '#334155', fontSize: 'clamp(13px, 4vw, 15px)', lineHeight: 1.65, marginBottom: 20, fontStyle: 'italic', position: 'relative', zIndex: 1 }}>
-                  "{t.text}"
-                </p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12, borderTop: '1px solid #e2e8f0', paddingTop: 16 }}>
-                  <img src={t.avatar} alt={t.name} style={{ width: 'clamp(40px, 8vw, 48px)', height: 'clamp(40px, 8vw, 48px)', borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(124,58,237,.2)' }} />
+                <p className="text-slate-600 text-sm leading-relaxed italic mb-6 relative z-10">"{t.text}"</p>
+                
+                <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
+                  <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover ring-2 ring-slate-100" />
                   <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                      <span style={{ color: '#0f172a', fontWeight: 700, fontSize: 'clamp(13px, 4vw, 15px)' }}>{t.name}</span>
-                      <BadgeCheck size={13} style={{ color: '#3b82f6' }} />
-                    </div>
-                    <div style={{ color: '#7c3aed', fontSize: 'clamp(10px, 3vw, 12px)', opacity: .8 }}>{t.role} at {t.company}</div>
+                    <h5 className="text-sm font-bold text-slate-950 flex items-center gap-1">
+                      {t.name} <BadgeCheck size={14} className="text-blue-500 fill-blue-500/10" />
+                    </h5>
+                    <p className="text-xs font-semibold text-violet-600 mt-0.5">{t.role} <span className="text-slate-400 font-normal">at {t.company}</span></p>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-
-          {/* Trust strip - Responsive */}
-          <div style={{ marginTop: 'clamp(40px, 6vw, 56px)', textAlign: 'center' }}>
-            <div className="glass" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 'clamp(16px, 4vw, 32px)', padding: 'clamp(16px, 4vw, 18px) clamp(24px, 5vw, 36px)', borderRadius: 100, background: '#fff' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
-                <div style={{ display: 'flex' }}>
-                  {[5, 6, 7, 8].map((i) => (
-                    <img key={i} src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i + 10}.jpg`} alt="" style={{ width: 'clamp(28px, 6vw, 36px)', height: 'clamp(28px, 6vw, 36px)', borderRadius: '50%', border: '2px solid rgba(124,58,237,.2)', marginLeft: i === 5 ? 0 : -8, objectFit: 'cover' }} />
-                  ))}
-                </div>
-                <span style={{ color: '#0f172a', fontWeight: 600, fontSize: 'clamp(12px, 3.5vw, 14px)' }}>Join 10,000+ happy readers</span>
-              </div>
-              <div style={{ width: 1, height: 28, background: '#e2e8f0', display: window.innerWidth < 640 ? 'none' : 'block' }} />
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', justifyContent: 'center' }}>
-                {[...Array(5)].map((_, i) => <Star key={i} size={14} style={{ fill: '#fbbf24', color: '#fbbf24' }} />)}
-                <span style={{ color: '#0f172a', fontWeight: 800, fontSize: 'clamp(16px, 5vw, 18px)', marginLeft: 4 }}>4.9</span>
-                <span style={{ color: '#64748b', fontSize: 'clamp(11px, 3vw, 13px)' }}>(2,500+ reviews)</span>
-              </div>
-              <div style={{ width: 1, height: 28, background: '#e2e8f0', display: window.innerWidth < 640 ? 'none' : 'block' }} />
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <Shield size={13} style={{ color: '#10b981' }} />
-                <span style={{ color: '#475569', fontSize: 'clamp(11px, 3vw, 13px)' }}>Verified Reviews</span>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-          NEWSLETTER POPUP - RESPONSIVE
-      ═══════════════════════════════════════════════════════ */}
+      {/* ─── MODAL: INTERACTIVE NEWSLETTER POPUP ─── */}
       {showNewsletterPopup && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.6)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999, padding: 16 }}>
-          <div className="popup-box" style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 'clamp(24px, 5vw, 32px)', maxWidth: 440, width: '100%', padding: 'clamp(24px, 6vw, 40px)', position: 'relative', textAlign: 'center', boxShadow: '0 40px 100px rgba(0,0,0,.15)' }}>
-            <div style={{ position: 'absolute', top: -40, left: '50%', transform: 'translateX(-50%)', width: 200, height: 200, borderRadius: '50%', background: 'radial-gradient(circle, rgba(124,58,237,.2), transparent 70%)', filter: 'blur(30px)', pointerEvents: 'none' }} />
-            <button onClick={() => setShowNewsletterPopup(false)} style={{ position: 'absolute', top: -12, right: -12, width: 28, height: 28, borderRadius: '50%', background: '#fff', border: '1px solid #e2e8f0', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, zIndex: 10 }}>✕</button>
+        <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-md flex items-center justify-center z-[9999] p-4 animate-fade-in">
+          <div className="bg-white border border-slate-100 rounded-[2rem] max-w-md w-full p-6 sm:p-8 relative shadow-2xl transform scale-100 transition-transform">
+            <button onClick={() => setShowNewsletterPopup(false)} className="absolute top-4 right-4 w-7 h-7 bg-slate-100 border border-slate-200/60 rounded-full text-slate-500 hover:text-slate-800 flex items-center justify-center font-bold text-xs transition-colors">✕</button>
+            
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-600 to-pink-600 text-white flex items-center justify-center mx-auto mb-4 shadow-xl shadow-violet-600/10">
+              <Mail size={24} />
+            </div>
 
-            <div style={{ width: 'clamp(60px, 12vw, 80px)', height: 'clamp(60px, 12vw, 80px)', borderRadius: 'clamp(20px, 4vw, 24px)', background: 'linear-gradient(135deg, #7c3aed, #db2777)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-              <Mail size={window.innerWidth < 640 ? 28 : 34} style={{ color: '#fff' }} />
+            <h4 className="text-xl font-black text-slate-950 text-center tracking-tight">Transmission Awaiting Sync</h4>
+            <p className="text-xs text-slate-400 text-center mt-1 max-w-xs mx-auto leading-relaxed">
+              Don't default out from the elite loop. Pull fresh verified gaming tech matrices directly into your node terminal.
+            </p>
+
+            <div className="mt-5 flex gap-2">
+              <input type="email" placeholder="Your vector email address" className="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-violet-500 w-full placeholder:text-slate-400 font-medium transition-colors" />
+              <button onClick={() => setShowNewsletterPopup(false)} className="bg-slate-950 text-white font-bold text-xs px-4 py-2.5 rounded-xl hover:bg-slate-900 transition-colors whitespace-nowrap">
+                Initialize
+              </button>
             </div>
-            <h3 style={{ color: '#0f172a', fontSize: 'clamp(1.25rem, 5vw, 1.5rem)', fontWeight: 800, margin: '0 0 8px' }}>Don't Miss Out!</h3>
-            <p style={{ color: '#64748b', fontSize: 'clamp(12px, 4vw, 14px)', margin: '0 0 20px', lineHeight: 1.6 }}>Get the latest articles straight to your inbox</p>
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              <input type="email" placeholder="Enter your email" className="neo-input" style={{ flex: 1, minWidth: 180 }} />
-              <button className="btn-glow" style={{ background: 'linear-gradient(135deg, #7c3aed, #db2777)', color: '#fff', border: 'none', borderRadius: 14, padding: 'clamp(10px, 3vw, 14px) clamp(16px, 4vw, 20px)', fontWeight: 700, cursor: 'pointer', fontSize: 'clamp(12px, 4vw, 14px)' }}>Go →</button>
-            </div>
-            <p style={{ color: '#64748b', fontSize: 'clamp(10px, 3vw, 11px)', marginTop: 14 }}>No spam, unsubscribe anytime. Join 50,000+ subscribers!</p>
+            <p className="text-[10px] text-slate-400 text-center mt-4 font-medium">Join 50,000+ engineers worldwide. Immutable data architecture.</p>
           </div>
         </div>
       )}
 
-      {/* ═══════════════════════════════════════════════════════
-          COOKIE CONSENT - RESPONSIVE
-      ═══════════════════════════════════════════════════════ */}
+      {/* ─── COOKIE AUTHORIZATION BAR ─── */}
       {showCookieConsent && (
-        <div className="cookie-bar" style={{ position: 'fixed', bottom: 'clamp(16px, 4vw, 24px)', left: window.innerWidth < 640 ? 16 : 'auto', right: window.innerWidth < 640 ? 16 : 24, maxWidth: window.innerWidth < 640 ? 'calc(100% - 32px)' : 400, background: '#fff', border: '1px solid #e2e8f0', borderRadius: 20, zIndex: 50, boxShadow: '0 24px 64px rgba(0,0,0,.08)', backdropFilter: 'blur(20px)' }}>
-          <div style={{ padding: 'clamp(16px, 4vw, 22px)' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 14, flexWrap: 'wrap' }}>
-              <Shield size={16} style={{ color: '#7c3aed', flexShrink: 0 }} />
-              <p style={{ color: '#475569', fontSize: 'clamp(11px, 3.5vw, 13px)', lineHeight: 1.5, margin: 0 }}>We use cookies to enhance your experience. By continuing, you agree to our <Link to="/privacy" style={{ color: '#7c3aed', fontWeight: 600, textDecoration: 'none' }}>Privacy Policy</Link>.</p>
-            </div>
-            <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-              <button style={{ border: '1px solid #e2e8f0', background: 'transparent', borderRadius: 12, padding: '6px 14px', fontSize: 'clamp(11px, 3vw, 13px)', fontWeight: 600, cursor: 'pointer' }}>Settings</button>
-              <button onClick={() => setShowCookieConsent(false)} className="btn-glow" style={{ background: 'linear-gradient(135deg, #7c3aed, #db2777)', color: '#fff', border: 'none', borderRadius: 12, padding: '6px 16px', fontSize: 'clamp(11px, 3vw, 13px)', fontWeight: 600, cursor: 'pointer' }}>Accept All</button>
-            </div>
+        <div className="fixed bottom-4 right-4 left-4 sm:left-auto max-w-sm bg-white/90 backdrop-blur-xl border border-slate-200/80 p-4 rounded-2xl shadow-2xl z-[999] flex flex-col gap-3">
+          <div className="flex items-start gap-2.5">
+            <Shield size={16} className="text-violet-600 shrink-0 mt-0.5" />
+            <p className="text-xs text-slate-500 leading-normal font-medium">
+              We leverage analytical session caching vectors to streamline operational indexing. Read our secure <Link to="/privacy" className="text-violet-600 font-bold hover:underline">Privacy Manifest</Link>.
+            </p>
+          </div>
+          <div className="flex gap-2 justify-end">
+            <button onClick={() => setShowCookieConsent(false)} className="px-3 py-1.5 text-[11px] font-bold text-slate-500 hover:text-slate-800 transition-colors">Config</button>
+            <button onClick={() => setShowCookieConsent(false)} className="bg-slate-950 text-white font-bold text-[11px] px-3.5 py-1.5 rounded-xl hover:bg-slate-900 transition-colors shadow-sm">Accept Integrity</button>
           </div>
         </div>
       )}
@@ -920,10 +591,3 @@ export default function HomePage() {
     </div>
   )
 }
-
-// Star component
-const StarIcon = ({ className, size, style }) => (
-  <svg className={className} xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="currentColor" style={style}>
-    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-  </svg>
-)
