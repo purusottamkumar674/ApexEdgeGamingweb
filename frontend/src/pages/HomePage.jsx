@@ -8,18 +8,94 @@ import {
   Users, BookOpen, Clock, ChevronRight, Flame, 
   Compass, Heart, Eye, Crown, Rocket, Target, 
   CheckCircle2, Play, Mail, Shield, Star,
-  BadgeCheck, MoveRight
+  BadgeCheck, MoveRight, Image as ImageIcon, X
 } from 'lucide-react'
 
 export default function HomePage() {
   const [blogs, setBlogs] = useState([])
   const [featured, setFeatured] = useState([])
   const [loading, setLoading] = useState(true)
+  const [imagesLoaded, setImagesLoaded] = useState({})
   const [showCookieConsent, setShowCookieConsent] = useState(true)
   const [showNewsletterPopup, setShowNewsletterPopup] = useState(false)
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const heroRef = useRef(null)
+
+  // Placeholder images array (beautiful, high-quality placeholders)
+  const placeholderImages = [
+    'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80',
+    'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80',
+    'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80',
+    'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80',
+    'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&q=80',
+    'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&q=80',
+    'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80',
+    'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80',
+  ]
+
+  // Function to check if image is from backend (has loaded)
+  const handleImageLoad = (id) => {
+    setImagesLoaded(prev => ({ ...prev, [id]: true }))
+  }
+
+  // Get placeholder for a specific index
+  const getPlaceholder = (index) => {
+    return placeholderImages[index % placeholderImages.length]
+  }
+
+  // Enhanced LazyImage Component with better loading animation
+  const LazyImage = ({ src, alt, className, id, index }) => {
+    const [imgSrc, setImgSrc] = useState(getPlaceholder(index))
+    const [isLoaded, setIsLoaded] = useState(false)
+    const [showReal, setShowReal] = useState(false)
+
+    useEffect(() => {
+      if (src && src !== imgSrc) {
+        const img = new Image()
+        img.onload = () => {
+          setImgSrc(src)
+          setIsLoaded(true)
+          setTimeout(() => setShowReal(true), 50)
+          if (id) handleImageLoad(id)
+        }
+        img.src = src
+      }
+    }, [src])
+
+    return (
+      <div className="relative w-full h-full overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900">
+        {/* Placeholder with loading animation */}
+        <div 
+          className={`absolute inset-0 transition-opacity duration-500 ${
+            showReal ? 'opacity-0 pointer-events-none' : 'opacity-100'
+          }`}
+        >
+          <img 
+            src={imgSrc} 
+            alt={alt} 
+            className="w-full h-full object-cover blur-sm scale-105"
+          />
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+            <div className="flex flex-col items-center gap-2">
+              {/* Spinner Animation */}
+              <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <span className="text-white/80 text-xs font-mono animate-pulse tracking-wide">LOADING...</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Real Image - Fades in when loaded */}
+        <img 
+          src={imgSrc} 
+          alt={alt} 
+          className={`${className} transition-all duration-700 ease-in-out ${
+            showReal ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
+          }`}
+        />
+      </div>
+    )
+  }
 
   // Interactive Hero Parallax Effect
   useEffect(() => {
@@ -35,7 +111,7 @@ export default function HomePage() {
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
-  // Black Friday Sale Countdown (Fixed 3 Days)
+  // Black Friday Sale Countdown
   useEffect(() => {
     const targetDate = new Date()
     targetDate.setDate(targetDate.getDate() + 3)
@@ -140,11 +216,20 @@ export default function HomePage() {
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .mono-font { font-family: 'JetBrains Mono', monospace; }
+        
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .animate-marquee { animation: marquee 30s linear infinite; }
         .animate-marquee:hover { animation-play-state: paused; }
+        
         @keyframes float-slow { 0%, 100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-20px) scale(1.05); } }
         .animate-float { animation: float-slow 8s ease-in-out infinite; }
+        
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .animate-spin { animation: spin 1s linear infinite; }
+        
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .animate-pulse { animation: pulse 1.5s ease-in-out infinite; }
+        
         .shimmer-text {
           background: linear-gradient(90deg, #7c3aed, #db2777, #10b981, #7c3aed);
           background-size: 300% auto;
@@ -152,7 +237,14 @@ export default function HomePage() {
           -webkit-text-fill-color: transparent;
           animation: shimmer-anim 6s linear infinite;
         }
+        
         @keyframes shimmer-anim { 0% { background-position: 0% center; } 100% { background-position: 300% center; } }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+        
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .animate-bounce { animation: bounce 1s ease-in-out infinite; }
       `}</style>
 
       {/* ─── ANNOUNCEMENT BAR ─── */}
@@ -166,13 +258,13 @@ export default function HomePage() {
           <div className="flex items-center gap-4 flex-wrap justify-center">
             <div className="flex gap-1.5">
               {[['D', countdown.days], ['H', countdown.hours], ['M', countdown.minutes], ['S', countdown.seconds]].map(([label, val]) => (
-                <div key={label} className="bg-white/15 border border-white/20 rounded-md px-2 py-0.5 min-w-[36px] text-center">
+                <div key={label} className="bg-white/15 border border-white/20 rounded-md px-2 py-0.5 min-w-[36px] text-center backdrop-blur-sm">
                   <div className="text-xs font-bold mono-font leading-tight">{String(val).padStart(2, '0')}</div>
                   <div className="text-[8px] tracking-wider opacity-70 font-semibold">{label}</div>
                 </div>
               ))}
             </div>
-            <button className="bg-white text-violet-700 hover:bg-violet-50 transition-all shadow-lg text-[11px] font-extrabold px-3.5 py-1.5 rounded-full tracking-wider transform hover:-translate-y-0.5">
+            <button className="bg-white text-violet-700 hover:bg-violet-50 transition-all shadow-lg text-[11px] font-extrabold px-3.5 py-1.5 rounded-full tracking-wider transform hover:-translate-y-0.5 active:scale-95">
               CLAIM OFFER →
             </button>
           </div>
@@ -182,9 +274,9 @@ export default function HomePage() {
       {/* ─── HERO SECTION ─── */}
       <section ref={heroRef} className="relative min-h-[90vh] flex items-center overflow-hidden bg-slate-50/50 border-b border-slate-200/60 py-12 lg:py-0">
         {/* Interactive Smooth Blur Background Orbs */}
-        <div className="absolute rounded-full pointer-events-none filter blur-[100px] transition-all duration-300 opacity-20 bg-gradient-to-br from-violet-600 to-indigo-600"
+        <div className="absolute rounded-full pointer-events-none filter blur-[100px] transition-all duration-300 ease-out opacity-20 bg-gradient-to-br from-violet-600 to-indigo-600"
           style={{ width: '600px', height: '600px', left: `${mousePosition.x * 0.2 - 10}%`, top: `${mousePosition.y * 0.2 - 10}%` }} />
-        <div className="absolute right-[-5%] bottom-[10%] w-[450px] height-[450px] rounded-full pointer-events-none filter blur-[120px] opacity-15 bg-pink-500 animate-float" />
+        <div className="absolute right-[-5%] bottom-[10%] w-[450px] h-[450px] rounded-full pointer-events-none filter blur-[120px] opacity-15 bg-pink-500 animate-float" />
 
         <div className="max-w-7xl mx-auto px-4 w-full relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
@@ -209,10 +301,10 @@ export default function HomePage() {
               </p>
 
               <div className="flex flex-wrap gap-3.5 justify-center lg:justify-start w-full sm:w-auto">
-                <Link to="/blog" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-pink-600 text-white font-semibold px-7 py-3.5 rounded-2xl shadow-xl shadow-violet-600/20 hover:shadow-violet-600/30 transition-all transform hover:-translate-y-0.5">
+                <Link to="/blog" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-pink-600 text-white font-semibold px-7 py-3.5 rounded-2xl shadow-xl shadow-violet-600/20 hover:shadow-violet-600/30 transition-all transform hover:-translate-y-0.5 active:scale-95">
                   Start Learning <MoveRight size={18} />
                 </Link>
-                <Link to="/about" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-700 font-medium px-6 py-3.5 rounded-2xl shadow-sm hover:bg-slate-50 transition-all">
+                <Link to="/about" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-700 font-medium px-6 py-3.5 rounded-2xl shadow-sm hover:bg-slate-50 transition-all hover:border-slate-300">
                   <Play size={16} className="text-violet-600 fill-violet-600" /> Watch Dashboard Tour
                 </Link>
               </div>
@@ -221,7 +313,7 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 border-t border-slate-200/80 w-full justify-center lg:justify-start">
                 <div className="flex -space-x-2.5">
                   {[1, 2, 3, 4].map((i) => (
-                    <img key={i} className="w-10 h-10 rounded-full border-2 border-white object-cover" src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i + 5}.jpg`} alt="User avatar" />
+                    <img key={i} className="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm" src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i + 5}.jpg`} alt="User avatar" />
                   ))}
                 </div>
                 <div className="text-center sm:text-left">
@@ -236,21 +328,27 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Hero Main Card Right (Fixed JS logic bug with true Tailwind responsive scaling) */}
+            {/* Hero Main Card Right - With LazyImage Component */}
             {heroPost && (
               <div className="lg:col-span-5 w-full relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-pink-600 rounded-[2rem] blur-2xl opacity-20 group-hover:opacity-25 transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-pink-600 rounded-[2rem] blur-2xl opacity-20 group-hover:opacity-25 transition-opacity duration-500" />
                 <Link to={`/blog/${heroPost.slug}`} className="block relative bg-white border border-slate-200/80 rounded-[2rem] p-3 shadow-xl overflow-hidden hover:border-slate-300 transition-all duration-300 transform group-hover:scale-[1.01]">
                   <div className="relative rounded-[1.6rem] overflow-hidden aspect-[4/3] sm:aspect-[16/10] lg:aspect-square xl:aspect-[4/3]">
-                    <img src={heroPost.coverImage || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&q=80'} alt={heroPost.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent" />
+                    <LazyImage 
+                      src={heroPost.coverImage} 
+                      alt={heroPost.title} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      id={heroPost._id}
+                      index={0}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent pointer-events-none" />
                     
-                    <div className="absolute top-4 left-4 flex gap-2">
+                    <div className="absolute top-4 left-4 flex gap-2 z-10">
                       <span className="bg-violet-600 text-white font-bold text-[10px] uppercase tracking-wider px-3 py-1 rounded-full shadow-md">{heroPost.category?.name || 'Featured'}</span>
                       <span className="bg-white/10 backdrop-blur-md text-amber-300 border border-white/10 font-bold text-[10px] px-3 py-1 rounded-full shadow-md flex items-center gap-1">👑 Editor's Choice</span>
                     </div>
 
-                    <div className="absolute bottom-0 inset-x-0 p-6 text-white">
+                    <div className="absolute bottom-0 inset-x-0 p-6 text-white z-10">
                       <h3 className="text-xl sm:text-2xl font-bold tracking-tight line-clamp-2 mb-3 group-hover:text-violet-200 transition-colors">{heroPost.title}</h3>
                       <div className="flex items-center gap-3 text-xs text-slate-300">
                         <img src={heroPost.author?.avatar || 'https://randomuser.me/api/portraits/men/10.jpg'} alt="" className="w-7 h-7 rounded-full border border-white/20" />
@@ -273,12 +371,12 @@ export default function HomePage() {
       {/* ─── BRANDS LOGO SCROLLER ─── */}
       <div className="border-b border-slate-200/80 bg-slate-50/40 py-5 overflow-hidden relative">
         <div className="flex whitespace-nowrap animate-marquee">
-          {[...featuredBrands, ...featuredBrands].map((brand, idx) => (
-            <div key={idx} className="inline-flex items-center gap-3 mx-8 opacity-40 hover:opacity-90 transition-opacity cursor-pointer">
-              <div className="w-8 h-8 bg-slate-950 rounded-lg p-1.5 flex items-center justify-center">
+          {[...featuredBrands, ...featuredBrands, ...featuredBrands].map((brand, idx) => (
+            <div key={idx} className="inline-flex items-center gap-3 mx-8 opacity-40 hover:opacity-90 transition-opacity cursor-pointer group">
+              <div className="w-8 h-8 bg-slate-900 rounded-lg p-1.5 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <img src={brand.logo} alt={brand.name} className="w-full h-full object-contain invert brightness-0" />
               </div>
-              <span className="text-slate-800 font-bold tracking-wider text-sm">{brand.name.toUpperCase()}</span>
+              <span className="text-slate-800 font-bold tracking-wider text-sm group-hover:text-violet-600 transition-colors">{brand.name.toUpperCase()}</span>
             </div>
           ))}
         </div>
@@ -288,8 +386,8 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {stats.map((stat, idx) => (
-            <div key={idx} className="group relative bg-white border border-slate-200/70 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all hover:border-slate-300">
-              <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${stat.color} text-white flex items-center justify-center mb-4 shadow-sm group-hover:scale-105 transition-transform`}>
+            <div key={idx} className="group relative bg-white border border-slate-200/70 p-6 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-slate-300">
+              <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${stat.color} text-white flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform duration-300`}>
                 {stat.icon}
               </div>
               <div className="text-3xl font-extrabold text-slate-900 tracking-tight">{stat.value}</div>
@@ -302,7 +400,7 @@ export default function HomePage() {
         </div>
 
         {/* Community Activity Board */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 mt-6 shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 mt-6 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 mb-4 border-b border-slate-100">
             <div className="flex items-center gap-2">
               <span className="relative flex h-2 w-2">
@@ -311,18 +409,18 @@ export default function HomePage() {
               </span>
               <h4 className="text-xs font-extrabold uppercase tracking-widest text-violet-700">Live Infrastructure Activities</h4>
             </div>
-            <span className="text-xs text-slate-400 tracking-wide font-medium">Refreshed real-time</span>
+            <span className="text-xs text-slate-400 tracking-wide font-medium mono-font">Refreshed real-time</span>
           </div>
           <div className="flex flex-col gap-2">
             {recentActivities.map((act, idx) => (
-              <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors gap-2">
+              <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors gap-2 group cursor-default">
                 <div className="flex items-center gap-3">
-                  <img src={act.avatar} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-slate-100" />
+                  <img src={act.avatar} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-slate-100 group-hover:ring-violet-200 transition-all" />
                   <p className="text-sm text-slate-600">
                     <strong className="text-slate-900 font-semibold">{act.user}</strong> <span className="text-slate-400 font-medium">{act.action}</span> <span className="text-violet-600 font-medium">"{act.article}"</span>
                   </p>
                 </div>
-                <span className="text-xs text-slate-400 self-end sm:self-auto">{act.time}</span>
+                <span className="text-xs text-slate-400 self-end sm:self-auto mono-font">{act.time}</span>
               </div>
             ))}
           </div>
@@ -338,7 +436,7 @@ export default function HomePage() {
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950">Fresh Production Matrix</h2>
           </div>
-          <Link to="/blog" className="inline-flex items-center gap-1.5 text-xs font-bold bg-slate-100 border border-slate-200/60 hover:bg-slate-200/60 text-slate-800 px-4 py-2.5 rounded-xl transition-all whitespace-nowrap">
+          <Link to="/blog" className="inline-flex items-center gap-1.5 text-xs font-bold bg-slate-100 border border-slate-200/60 hover:bg-slate-200/60 text-slate-800 px-4 py-2.5 rounded-xl transition-all whitespace-nowrap hover:gap-2">
             Browse Archive <ArrowRight size={14} />
           </Link>
         </div>
@@ -351,12 +449,52 @@ export default function HomePage() {
                 <div className="h-4 bg-slate-200 rounded w-1/3 mb-2" />
                 <div className="h-6 bg-slate-200 rounded w-3/4 mb-3" />
                 <div className="h-4 bg-slate-200 rounded w-full" />
+                <div className="flex items-center gap-2 mt-4">
+                  <div className="w-8 h-8 bg-slate-200 rounded-full" />
+                  <div className="h-3 bg-slate-200 rounded w-24" />
+                </div>
               </div>
             ))}
           </div>
         ) : recentPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recentPosts.map(blog => <BlogCard key={blog._id} blog={blog} />)}
+            {recentPosts.map((blog, idx) => (
+              <div key={blog._id} className="group bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-slate-300">
+                <Link to={`/blog/${blog.slug}`} className="block">
+                  <div className="relative aspect-[16/10] overflow-hidden">
+                    <LazyImage 
+                      src={blog.coverImage} 
+                      alt={blog.title} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      id={blog._id}
+                      index={idx + 1}
+                    />
+                    <div className="absolute top-3 left-3 z-10">
+                      <span className="bg-violet-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md">{blog.category?.name || 'Article'}</span>
+                    </div>
+                  </div>
+                  <div className="p-5">
+                    <div className="flex items-center gap-2 text-xs text-slate-400 mb-2">
+                      <span>{format(new Date(blog.createdAt), 'MMM d, yyyy')}</span>
+                      <span>•</span>
+                      <span>{blog.readTime} min read</span>
+                    </div>
+                    <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-2 group-hover:text-violet-600 transition-colors">{blog.title}</h3>
+                    <p className="text-sm text-slate-500 line-clamp-2">{blog.excerpt || 'Discover insights and expert knowledge from industry professionals...'}</p>
+                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+                      <div className="flex items-center gap-2">
+                        <img src={blog.author?.avatar || 'https://randomuser.me/api/portraits/men/1.jpg'} className="w-6 h-6 rounded-full object-cover" alt="" />
+                        <span className="text-xs font-medium text-slate-700">{blog.author?.name}</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-slate-400">
+                        <Heart size={14} className="group-hover:fill-red-500 group-hover:text-red-500 transition-colors" />
+                        <span className="text-xs">{Math.floor(Math.random() * 100) + 20}</span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="text-center py-20 bg-slate-50 border border-slate-200 rounded-2xl">
@@ -367,7 +505,7 @@ export default function HomePage() {
 
         {recentPosts.length > 0 && (
           <div className="text-center mt-12">
-            <Link to="/blog" className="inline-flex items-center gap-2 bg-slate-950 text-white font-bold px-7 py-3.5 rounded-xl shadow-lg hover:bg-slate-900 transition-all transform hover:-translate-y-0.5">
+            <Link to="/blog" className="inline-flex items-center gap-2 bg-gradient-to-r from-slate-900 to-slate-800 text-white font-bold px-7 py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 active:scale-95">
               Load More Articles <ArrowRight size={16} />
             </Link>
           </div>
@@ -385,12 +523,12 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-            {categories.map((cat) => (
-              <Link key={cat.name} to={`/category/${cat.name.toLowerCase()}`} className="group bg-white border border-slate-200/70 p-6 rounded-2xl text-center shadow-sm hover:shadow-md hover:border-slate-300 transition-all transform hover:-translate-y-1 block">
+            {categories.map((cat, idx) => (
+              <Link key={cat.name} to={`/category/${cat.name.toLowerCase()}`} className="group bg-white border border-slate-200/70 p-6 rounded-2xl text-center shadow-sm hover:shadow-xl hover:border-violet-300 transition-all duration-300 transform hover:-translate-y-1.5">
                 <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-300 inline-block">{cat.icon}</div>
                 <h4 className="text-slate-900 font-bold text-base tracking-tight">{cat.name}</h4>
                 <p className="text-xs text-slate-400 mt-1 line-clamp-1">{cat.description}</p>
-                <span className="inline-block text-[10px] font-extrabold text-violet-600 bg-violet-50 border border-violet-100 rounded-full px-2.5 py-0.5 mt-4 group-hover:bg-violet-600 group-hover:text-white transition-colors">
+                <span className="inline-block text-[10px] font-extrabold text-violet-600 bg-violet-50 border border-violet-100 rounded-full px-2.5 py-0.5 mt-4 group-hover:bg-violet-600 group-hover:text-white group-hover:border-violet-600 transition-all duration-300">
                   {cat.count} Papers
                 </span>
               </Link>
@@ -406,7 +544,7 @@ export default function HomePage() {
           {/* Trending Panel Left */}
           <div className="lg:col-span-7 w-full">
             <div className="flex items-center gap-3 mb-8">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-red-500 text-white flex items-center justify-center shadow-md">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-red-500 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
                 <Flame size={18} className="fill-current" />
               </div>
               <div>
@@ -417,10 +555,10 @@ export default function HomePage() {
 
             <div className="flex flex-col gap-3">
               {trendingTopics.map((topic, idx) => (
-                <Link key={idx} to={`/topic/${topic.name.toLowerCase()}`} className="group flex items-center justify-between p-4 bg-white border border-slate-200/70 rounded-xl shadow-sm hover:border-slate-300 transition-all">
+                <Link key={idx} to={`/topic/${topic.name.toLowerCase()}`} className="group flex items-center justify-between p-4 bg-white border border-slate-200/70 rounded-xl shadow-sm hover:shadow-md hover:border-violet-300 transition-all duration-300 hover:-translate-x-1">
                   <div className="flex items-center gap-4">
-                    <span className="mono-font text-xs font-bold text-slate-300 group-hover:text-violet-500 transition-colors">0{idx + 1}</span>
-                    <div className="w-10 h-10 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-xl">{topic.icon}</div>
+                    <span className="mono-font text-xs font-bold text-slate-300 group-hover:text-violet-500 transition-colors w-6">0{idx + 1}</span>
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">{topic.icon}</div>
                     <div>
                       <h5 className="text-sm font-bold text-slate-950 group-hover:text-violet-600 transition-colors">{topic.name}</h5>
                       <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-400 font-medium">
@@ -430,7 +568,7 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                  <ChevronRight size={16} className="text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+                  <ChevronRight size={16} className="text-slate-400 group-hover:translate-x-1 group-hover:text-violet-600 transition-all" />
                 </Link>
               ))}
             </div>
@@ -438,37 +576,40 @@ export default function HomePage() {
 
           {/* Premium Sign-up Sidebar Right */}
           <div className="lg:col-span-5 w-full lg:sticky lg:top-8">
-            <div className="relative bg-white border border-slate-200 rounded-3xl p-6 shadow-xl overflow-hidden">
+            <div className="relative bg-white border border-slate-200 rounded-3xl p-6 shadow-xl overflow-hidden hover:shadow-2xl transition-all">
               <div className="absolute -right-12 -top-12 w-44 h-44 rounded-full filter blur-3xl opacity-10 bg-violet-600" />
+              <div className="absolute -left-12 -bottom-12 w-44 h-44 rounded-full filter blur-3xl opacity-10 bg-pink-600" />
               
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-violet-600 to-pink-600 text-white flex items-center justify-center shadow-lg shadow-violet-600/10">
-                  <Target size={20} />
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-violet-600 to-pink-600 text-white flex items-center justify-center shadow-lg shadow-violet-600/10">
+                    <Target size={20} />
+                  </div>
+                  <div>
+                    <h4 className="text-base font-extrabold text-slate-950">Sync Collective Intel</h4>
+                    <p className="text-xs font-bold text-emerald-600">1,200+ Nodes Interactive</p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-base font-extrabold text-slate-950">Sync Collective Intel</h4>
-                  <p className="text-xs font-bold text-emerald-600">1,200+ Nodes Interactive</p>
+
+                <p className="text-sm text-slate-500 leading-relaxed mb-5">
+                  Join our premium open network cluster. Write papers, get algorithmic code optimization reviews, and receive peer feedbacks instantly.
+                </p>
+
+                {/* Progress Tracker */}
+                <div className="mb-6 bg-slate-50 border border-slate-100 p-3.5 rounded-xl">
+                  <div className="flex justify-between text-xs font-bold mb-1.5">
+                    <span className="text-slate-500">Core Network Cap</span>
+                    <span className="text-violet-600 font-mono">78% Indexed</span>
+                  </div>
+                  <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-violet-600 to-pink-600 rounded-full transition-all duration-1000" style={{ width: '78%' }} />
+                  </div>
                 </div>
+
+                <button className="w-full bg-gradient-to-r from-violet-600 to-pink-600 hover:opacity-95 transition-all text-white text-xs font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-violet-600/15 tracking-wide uppercase hover:scale-[1.02] active:scale-95">
+                  Establish Free Authorization →
+                </button>
               </div>
-
-              <p className="text-sm text-slate-500 leading-relaxed mb-5">
-                Join our premium open network cluster. Write papers, get algorithmic code optimization reviews, and receive peer feedbacks instantly.
-              </p>
-
-              {/* Progress Tracker */}
-              <div className="mb-6 bg-slate-50 border border-slate-100 p-3.5 rounded-xl">
-                <div className="flex justify-between text-xs font-bold mb-1.5">
-                  <span className="text-slate-500">Core Network Cap</span>
-                  <span className="text-violet-600 font-mono">78% Indexed</span>
-                </div>
-                <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-violet-600 to-pink-600 rounded-full" style={{ width: '78%' }} />
-                </div>
-              </div>
-
-              <button className="w-full bg-gradient-to-r from-violet-600 to-pink-600 hover:opacity-95 transition-opacity text-white text-xs font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-violet-600/15 tracking-wide uppercase">
-                Establish Free Authorization →
-              </button>
             </div>
           </div>
 
@@ -477,28 +618,28 @@ export default function HomePage() {
 
       {/* ─── NEWSLETTER SUBSCRIPTION CTA ─── */}
       <section className="max-w-7xl mx-auto px-4 pb-16">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-slate-950 text-white border border-slate-800 p-8 sm:p-12 lg:p-16 text-center shadow-2xl">
+        <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white border border-slate-800 p-8 sm:p-12 lg:p-16 text-center shadow-2xl">
           <div className="absolute inset-0 bg-cover bg-center opacity-5 mix-blend-overlay" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1557683316-973673baf926?w=1600&q=80)' }} />
-          <div className="absolute right-[-10%] top-[-20%] w-[400px] h-[400px] bg-violet-600/10 rounded-full blur-[100px]" />
-          <div className="absolute left-[-5%] bottom-[-20%] w-[300px] h-[300px] bg-pink-600/10 rounded-full blur-[80px]" />
+          <div className="absolute right-[-10%] top-[-20%] w-[400px] h-[400px] bg-violet-600/20 rounded-full blur-[100px] animate-pulse" />
+          <div className="absolute left-[-5%] bottom-[-20%] w-[300px] h-[300px] bg-pink-600/20 rounded-full blur-[80px] animate-pulse delay-1000" />
 
           <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center gap-4">
-            <div className="inline-flex items-center gap-1 bg-white/10 border border-white/10 rounded-full px-3 py-1 text-[11px] font-bold tracking-widest uppercase text-pink-300">
+            <div className="inline-flex items-center gap-1 bg-white/10 backdrop-blur-xl border border-white/10 rounded-full px-3 py-1 text-[11px] font-bold tracking-widest uppercase text-pink-300">
               <Rocket size={12} /> ENTERPRISE CHANNEL
             </div>
             <h3 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">Subscribe to Premium Pipeline</h3>
-            <p className="text-slate-400 text-sm sm:text-base max-w-md leading-relaxed">
+            <p className="text-slate-300 text-sm sm:text-base max-w-md leading-relaxed">
               Get highly classified weekly insights, tech optimization logs, and priority community updates directly inside your inbox.
             </p>
 
             <form onSubmit={e => e.preventDefault()} className="w-full max-w-md flex flex-col sm:flex-row gap-2 mt-4">
-              <input type="email" placeholder="Secure email vector address" className="bg-slate-900 border border-slate-800 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-violet-500 w-full placeholder:text-slate-600 font-medium transition-colors" />
-              <button className="bg-white text-slate-950 font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl hover:bg-slate-100 transition-colors whitespace-nowrap shadow-md">
+              <input type="email" placeholder="Secure email vector address" className="bg-slate-900/50 border border-slate-700 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 w-full placeholder:text-slate-500 font-medium transition-all" />
+              <button className="bg-white text-slate-950 font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl hover:bg-slate-100 transition-all whitespace-nowrap shadow-md hover:shadow-xl hover:scale-105 active:scale-95">
                 Subscribe Vector
               </button>
             </form>
 
-            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-6 text-xs text-slate-500 font-medium">
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-6 text-xs text-slate-400 font-medium">
               {['Zero Spam Policy', 'Revoke Anytime', '100% Free Ecosystem'].map(text => (
                 <div key={text} className="flex items-center gap-1.5">
                   <CheckCircle2 size={12} className="text-emerald-500" />
@@ -511,8 +652,9 @@ export default function HomePage() {
       </section>
 
       {/* ─── TESTIMONIALS ARCHITECTURE ─── */}
-      <section className="bg-slate-50 border-t border-slate-200/80 py-20 px-4 relative overflow-hidden">
+      <section className="bg-gradient-to-b from-slate-50 to-white border-t border-slate-200/80 py-20 px-4 relative overflow-hidden">
         <div className="absolute left-[-5%] top-[10%] w-96 h-96 bg-violet-200/40 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute right-[-5%] bottom-[10%] w-96 h-96 bg-pink-200/40 rounded-full blur-3xl pointer-events-none" />
         
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center max-w-xl mx-auto mb-16">
@@ -520,19 +662,20 @@ export default function HomePage() {
               <Heart size={12} className="fill-current" /> GLOBAL ECOSYSTEM REVIEWS
             </div>
             <h2 className="text-3xl font-extrabold tracking-tight text-slate-950">Peer Validation Metrics</h2>
+            <p className="text-slate-500 mt-2">Trusted by industry leaders worldwide</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {testimonials.map((t, idx) => (
-              <div key={idx} className="bg-white border border-slate-200/80 p-6 sm:p-8 rounded-2xl shadow-sm relative group hover:border-slate-300 transition-all">
-                <span className="text-6xl text-slate-100 font-serif absolute top-4 right-6 pointer-events-none select-none">“</span>
+              <div key={idx} className="bg-white border border-slate-200/80 p-6 sm:p-8 rounded-2xl shadow-md relative group hover:shadow-xl hover:border-slate-300 transition-all duration-300 hover:-translate-y-1">
+                <span className="text-6xl text-slate-100 font-serif absolute top-4 right-6 pointer-events-none select-none group-hover:text-violet-100 transition-colors">“</span>
                 <div className="flex text-amber-400 gap-0.5 mb-4">
                   {[...Array(5)].map((_, i) => <Star key={i} size={11} className="fill-current" />)}
                 </div>
                 <p className="text-slate-600 text-sm leading-relaxed italic mb-6 relative z-10">"{t.text}"</p>
                 
                 <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
-                  <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover ring-2 ring-slate-100" />
+                  <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover ring-2 ring-slate-100 group-hover:ring-violet-200 transition-all" />
                   <div>
                     <h5 className="text-sm font-bold text-slate-950 flex items-center gap-1">
                       {t.name} <BadgeCheck size={14} className="text-blue-500 fill-blue-500/10" />
@@ -548,11 +691,13 @@ export default function HomePage() {
 
       {/* ─── MODAL: INTERACTIVE NEWSLETTER POPUP ─── */}
       {showNewsletterPopup && (
-        <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-md flex items-center justify-center z-[9999] p-4 animate-fade-in">
-          <div className="bg-white border border-slate-100 rounded-[2rem] max-w-md w-full p-6 sm:p-8 relative shadow-2xl transform scale-100 transition-transform">
-            <button onClick={() => setShowNewsletterPopup(false)} className="absolute top-4 right-4 w-7 h-7 bg-slate-100 border border-slate-200/60 rounded-full text-slate-500 hover:text-slate-800 flex items-center justify-center font-bold text-xs transition-colors">✕</button>
+        <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-md flex items-center justify-center z-[9999] p-4 animate-fade-in">
+          <div className="bg-white border border-slate-100 rounded-[2rem] max-w-md w-full p-6 sm:p-8 relative shadow-2xl transform scale-100 transition-transform animate-fade-in">
+            <button onClick={() => setShowNewsletterPopup(false)} className="absolute top-4 right-4 w-7 h-7 bg-slate-100 hover:bg-slate-200 border border-slate-200/60 rounded-full text-slate-500 hover:text-slate-800 flex items-center justify-center font-bold text-xs transition-all hover:scale-110">
+              <X size={14} />
+            </button>
             
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-600 to-pink-600 text-white flex items-center justify-center mx-auto mb-4 shadow-xl shadow-violet-600/10">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-600 to-pink-600 text-white flex items-center justify-center mx-auto mb-4 shadow-xl shadow-violet-600/20">
               <Mail size={24} />
             </div>
 
@@ -562,8 +707,8 @@ export default function HomePage() {
             </p>
 
             <div className="mt-5 flex gap-2">
-              <input type="email" placeholder="Your vector email address" className="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-violet-500 w-full placeholder:text-slate-400 font-medium transition-colors" />
-              <button onClick={() => setShowNewsletterPopup(false)} className="bg-slate-950 text-white font-bold text-xs px-4 py-2.5 rounded-xl hover:bg-slate-900 transition-colors whitespace-nowrap">
+              <input type="email" placeholder="Your vector email address" className="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 w-full placeholder:text-slate-400 font-medium transition-all" />
+              <button onClick={() => setShowNewsletterPopup(false)} className="bg-gradient-to-r from-slate-900 to-slate-800 text-white font-bold text-xs px-4 py-2.5 rounded-xl hover:from-violet-600 hover:to-pink-600 transition-all whitespace-nowrap shadow-md hover:shadow-lg">
                 Initialize
               </button>
             </div>
@@ -574,7 +719,7 @@ export default function HomePage() {
 
       {/* ─── COOKIE AUTHORIZATION BAR ─── */}
       {showCookieConsent && (
-        <div className="fixed bottom-4 right-4 left-4 sm:left-auto max-w-sm bg-white/90 backdrop-blur-xl border border-slate-200/80 p-4 rounded-2xl shadow-2xl z-[999] flex flex-col gap-3">
+        <div className="fixed bottom-4 right-4 left-4 sm:left-auto max-w-sm bg-white/95 backdrop-blur-xl border border-slate-200/80 p-4 rounded-2xl shadow-2xl z-[999] flex flex-col gap-3 animate-fade-in">
           <div className="flex items-start gap-2.5">
             <Shield size={16} className="text-violet-600 shrink-0 mt-0.5" />
             <p className="text-xs text-slate-500 leading-normal font-medium">
@@ -582,8 +727,12 @@ export default function HomePage() {
             </p>
           </div>
           <div className="flex gap-2 justify-end">
-            <button onClick={() => setShowCookieConsent(false)} className="px-3 py-1.5 text-[11px] font-bold text-slate-500 hover:text-slate-800 transition-colors">Config</button>
-            <button onClick={() => setShowCookieConsent(false)} className="bg-slate-950 text-white font-bold text-[11px] px-3.5 py-1.5 rounded-xl hover:bg-slate-900 transition-colors shadow-sm">Accept Integrity</button>
+            <button onClick={() => setShowCookieConsent(false)} className="px-3 py-1.5 text-[11px] font-bold text-slate-500 hover:text-slate-800 transition-colors hover:bg-slate-100 rounded-lg">
+              Config
+            </button>
+            <button onClick={() => setShowCookieConsent(false)} className="bg-gradient-to-r from-slate-900 to-slate-800 text-white font-bold text-[11px] px-3.5 py-1.5 rounded-xl hover:from-violet-600 hover:to-pink-600 transition-all shadow-sm hover:shadow-md">
+              Accept Integrity
+            </button>
           </div>
         </div>
       )}
