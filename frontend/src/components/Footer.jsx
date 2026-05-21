@@ -90,23 +90,25 @@ export default function Footer() {
               </div>
             </div>
             
+
+            
             {/* Social Links */}
             <div>
               <h4 className="text-white text-sm font-semibold mb-3">Follow Us</h4>
               <div className="flex gap-2">
-                <a href="#" className="group p-2 bg-gray-800 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-110">
+                <a href="https://x.com/apexedgegaming" className="group p-2 bg-gray-800 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-110">
                  <FaTwitter size={16} className="text-gray-400 group-hover:text-white transition-colors" />
                 </a>
-                <a href="#" className="group p-2 bg-gray-800 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-110">
+                {/* <a href="#" className="group p-2 bg-gray-800 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-110">
                   <FaLinkedin size={16} className="text-gray-400 group-hover:text-white transition-colors" />
-                </a>
-                <a href="#" className="group p-2 bg-gray-800 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-110">
+                </a> */}
+                <a href="https://www.instagram.com/apex_edge_gaming/" className="group p-2 bg-gray-800 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-110">
                   <FaInstagram size={16} className="text-gray-400 group-hover:text-white transition-colors" />
                 </a>
-                <a href="#" className="group p-2 bg-gray-800 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-110">
+                <a href="https://www.facebook.com/Apexedgegaming" className="group p-2 bg-gray-800 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-110">
                   <FaFacebook size={16} className="text-gray-400 group-hover:text-white transition-colors" />
                 </a>
-                <a href="#" className="group p-2 bg-gray-800 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-110">
+                <a href="https://www.youtube.com/@ApexEdgeGaming" className="group p-2 bg-gray-800 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-110">
                   <FaYoutube size={16} className="text-gray-400 group-hover:text-white transition-colors" />
                 </a>
               </div>

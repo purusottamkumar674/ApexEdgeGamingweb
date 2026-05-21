@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { getBlogs, getFeaturedBlogs } from '../utils/api'
-import BlogCard from '../components/BlogCard'
-import { format } from 'date-fns'
+import { format, formatDistanceToNow } from 'date-fns'
 import { 
   ArrowRight, TrendingUp, Sparkles, Zap, Award, 
   Users, BookOpen, Clock, ChevronRight, Flame, 
@@ -15,87 +14,81 @@ export default function HomePage() {
   const [blogs, setBlogs] = useState([])
   const [featured, setFeatured] = useState([])
   const [loading, setLoading] = useState(true)
-  const [imagesLoaded, setImagesLoaded] = useState({})
   const [showCookieConsent, setShowCookieConsent] = useState(true)
   const [showNewsletterPopup, setShowNewsletterPopup] = useState(false)
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const heroRef = useRef(null)
 
-  // Placeholder images array (beautiful, high-quality placeholders)
-  const placeholderImages = [
-    'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80',
-    'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80',
-    'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80',
-    'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80',
-    'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&q=80',
-    'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&q=80',
-    'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80',
-    'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80',
-  ]
+  const apiOrigin = (import.meta.env.VITE_API_URL || 'https://apexedgegamingweb.onrender.com/api').replace(/\/api\/?$/, '')
 
-  // Function to check if image is from backend (has loaded)
-  const handleImageLoad = (id) => {
-    setImagesLoaded(prev => ({ ...prev, [id]: true }))
-  }
+  const resolveCoverUrl = useCallback((url) => {
+    if (!url) return ''
+    if (url.startsWith('http://') || url.startsWith('https://')) return url
+    if (url.startsWith('/')) return `${apiOrigin}${url}`
+    return `${apiOrigin}/${url}`
+  }, [apiOrigin])
 
-  // Get placeholder for a specific index
-  const getPlaceholder = (index) => {
-    return placeholderImages[index % placeholderImages.length]
-  }
-
-  // Enhanced LazyImage Component with better loading animation
-  const LazyImage = ({ src, alt, className, id, index }) => {
-    const [imgSrc, setImgSrc] = useState(getPlaceholder(index))
+  // Optimized LazyImage component with memo
+  const LazyImage = useCallback(({ src, alt, className }) => {
     const [isLoaded, setIsLoaded] = useState(false)
-    const [showReal, setShowReal] = useState(false)
+    const [isError, setIsError] = useState(false)
+    const imageUrl = resolveCoverUrl(src)
+    const imgRef = useRef(null)
 
     useEffect(() => {
-      if (src && src !== imgSrc) {
-        const img = new Image()
-        img.onload = () => {
-          setImgSrc(src)
-          setIsLoaded(true)
-          setTimeout(() => setShowReal(true), 50)
-          if (id) handleImageLoad(id)
-        }
-        img.src = src
+      if (!imageUrl) return
+      
+      setIsLoaded(false)
+      setIsError(false)
+      
+      const img = new Image()
+      
+      img.onload = () => {
+        setIsLoaded(true)
       }
-    }, [src])
+      
+      img.onerror = () => {
+        setIsError(true)
+        console.error('Failed to load image:', imageUrl)
+      }
+      
+      img.src = imageUrl
+      
+      return () => {
+        img.onload = null
+        img.onerror = null
+      }
+    }, [imageUrl])
 
     return (
-      <div className="relative w-full h-full overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900">
-        {/* Placeholder with loading animation */}
-        <div 
-          className={`absolute inset-0 transition-opacity duration-500 ${
-            showReal ? 'opacity-0 pointer-events-none' : 'opacity-100'
-          }`}
-        >
-          <img 
-            src={imgSrc} 
-            alt={alt} 
-            className="w-full h-full object-cover blur-sm scale-105"
-          />
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-            <div className="flex flex-col items-center gap-2">
-              {/* Spinner Animation */}
-              <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              <span className="text-white/80 text-xs font-mono animate-pulse tracking-wide">LOADING...</span>
-            </div>
+      <div className="relative w-full h-full overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
+        {!isLoaded && !isError && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
           </div>
-        </div>
-
-        {/* Real Image - Fades in when loaded */}
-        <img 
-          src={imgSrc} 
-          alt={alt} 
-          className={`${className} transition-all duration-700 ease-in-out ${
-            showReal ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
-          }`}
-        />
+        )}
+        {isError && (
+          <div className="absolute inset-0 flex items-center justify-center bg-slate-100">
+            <ImageIcon size={32} className="text-slate-400" />
+          </div>
+        )}
+        {imageUrl && (
+          <img
+            src={imageUrl}
+            alt={alt || 'Image'}
+            className={`${className} w-full h-full object-cover transition-all duration-500 ${
+              isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
+            }`}
+            loading="lazy"
+            decoding="async"
+            onLoad={() => setIsLoaded(true)}
+            onError={() => setIsError(true)}
+          />
+        )}
       </div>
     )
-  }
+  }, [resolveCoverUrl])
 
   // Interactive Hero Parallax Effect
   useEffect(() => {
@@ -161,6 +154,14 @@ export default function HomePage() {
 
   const heroPost = featured[0] || blogs[0]
   const recentPosts = blogs.slice(0, 6)
+  const liveActivities = blogs.slice(0, 4).map((blog) => ({
+    user: blog.author?.name || 'Author',
+    action: 'published',
+    article: blog.title,
+    slug: blog.slug,
+    time: formatDistanceToNow(new Date(blog.createdAt), { addSuffix: true }),
+    avatar: blog.author?.avatar,
+  }))
 
   // Static Data Packages
   const stats = [
@@ -199,13 +200,6 @@ export default function HomePage() {
     { name: 'Apple', logo: 'https://cdn-icons-png.flaticon.com/512/732/732233.png' },
     { name: 'Meta', logo: 'https://cdn-icons-png.flaticon.com/512/5968/5968764.png' },
     { name: 'Netflix', logo: 'https://cdn-icons-png.flaticon.com/512/5977/5977590.png' },
-  ]
-
-  const recentActivities = [
-    { user: 'Rahul Sharma', action: 'published', article: 'The Future of AI in 2026', time: '2 min ago', avatar: 'https://randomuser.me/api/portraits/men/11.jpg' },
-    { user: 'Priya Verma', action: 'commented on', article: 'Web Development Trends', time: '15 min ago', avatar: 'https://randomuser.me/api/portraits/women/12.jpg' },
-    { user: 'Amit Kumar', action: 'liked', article: 'UX Design Principles', time: '1 hour ago', avatar: 'https://randomuser.me/api/portraits/men/13.jpg' },
-    { user: 'Anamika Singh', action: 'shared', article: 'Startup Success Stories', time: '2 hours ago', avatar: 'https://randomuser.me/api/portraits/women/14.jpg' },
   ]
 
   return (
@@ -328,41 +322,41 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Hero Main Card Right - With LazyImage Component */}
-            {heroPost && (
-              <div className="lg:col-span-5 w-full relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-pink-600 rounded-[2rem] blur-2xl opacity-20 group-hover:opacity-25 transition-opacity duration-500" />
-                <Link to={`/blog/${heroPost.slug}`} className="block relative bg-white border border-slate-200/80 rounded-[2rem] p-3 shadow-xl overflow-hidden hover:border-slate-300 transition-all duration-300 transform group-hover:scale-[1.01]">
-                  <div className="relative rounded-[1.6rem] overflow-hidden aspect-[4/3] sm:aspect-[16/10] lg:aspect-square xl:aspect-[4/3]">
-                    <LazyImage 
-                      src={heroPost.coverImage} 
-                      alt={heroPost.title} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                      id={heroPost._id}
-                      index={0}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent pointer-events-none" />
-                    
-                    <div className="absolute top-4 left-4 flex gap-2 z-10">
-                      <span className="bg-violet-600 text-white font-bold text-[10px] uppercase tracking-wider px-3 py-1 rounded-full shadow-md">{heroPost.category?.name || 'Featured'}</span>
-                      <span className="bg-white/10 backdrop-blur-md text-amber-300 border border-white/10 font-bold text-[10px] px-3 py-1 rounded-full shadow-md flex items-center gap-1">👑 Editor's Choice</span>
-                    </div>
+            {/* Hero Main Card Right */}
+            <div className="lg:col-span-5 w-full relative group">
+              <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-pink-600 rounded-[2rem] blur-2xl opacity-20 group-hover:opacity-25 transition-opacity duration-500" />
+              <Link to={heroPost ? `/blog/${heroPost.slug}` : '/blog'} className="block relative bg-white border border-slate-200/80 rounded-[2rem] p-3 shadow-xl overflow-hidden hover:border-slate-300 transition-all duration-300 transform group-hover:scale-[1.01]">
+                <div className="relative rounded-[1.6rem] overflow-hidden aspect-[4/3] sm:aspect-[16/10] lg:aspect-square xl:aspect-[4/3]">
+                  <LazyImage
+                    src={heroPost?.coverImage}
+                    alt={heroPost?.title || 'Featured article'}
+                    className="w-full h-full"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent pointer-events-none" />
 
-                    <div className="absolute bottom-0 inset-x-0 p-6 text-white z-10">
-                      <h3 className="text-xl sm:text-2xl font-bold tracking-tight line-clamp-2 mb-3 group-hover:text-violet-200 transition-colors">{heroPost.title}</h3>
-                      <div className="flex items-center gap-3 text-xs text-slate-300">
-                        <img src={heroPost.author?.avatar || 'https://randomuser.me/api/portraits/men/10.jpg'} alt="" className="w-7 h-7 rounded-full border border-white/20" />
-                        <span className="font-medium text-white">{heroPost.author?.name}</span>
-                        <span>•</span>
-                        <span>{format(new Date(heroPost.createdAt), 'MMM d, yyyy')}</span>
-                        <span>•</span>
-                        <span className="bg-white/10 px-2 py-0.5 rounded text-[10px] tracking-wide">{heroPost.readTime} Min Read</span>
-                      </div>
+                  <div className="absolute top-4 left-4 flex gap-2 z-10">
+                    <span className="bg-violet-600 text-white font-bold text-[10px] uppercase tracking-wider px-3 py-1 rounded-full shadow-md">{heroPost?.category?.name || 'Featured'}</span>
+                    <span className="bg-white/10 backdrop-blur-md text-amber-300 border border-white/10 font-bold text-[10px] px-3 py-1 rounded-full shadow-md flex items-center gap-1">👑 Editor's Choice</span>
+                  </div>
+
+                  <div className="absolute bottom-0 inset-x-0 p-6 text-white z-10">
+                    <h3 className="text-xl sm:text-2xl font-bold tracking-tight line-clamp-2 mb-3 group-hover:text-violet-200 transition-colors">{heroPost?.title || 'Discover Top Gaming Insights'}</h3>
+                    <div className="flex items-center gap-3 text-xs text-slate-300">
+                      <img src={heroPost?.author?.avatar || 'https://randomuser.me/api/portraits/men/10.jpg'} alt="" className="w-7 h-7 rounded-full border border-white/20" />
+                      <span className="font-medium text-white">{heroPost?.author?.name || 'ApexEdge Team'}</span>
+                      {heroPost && (
+                        <>
+                          <span>•</span>
+                          <span>{format(new Date(heroPost.createdAt), 'MMM d, yyyy')}</span>
+                          <span>•</span>
+                          <span className="bg-white/10 px-2 py-0.5 rounded text-[10px] tracking-wide">{heroPost.readTime} Min Read</span>
+                        </>
+                      )}
                     </div>
                   </div>
-                </Link>
-              </div>
-            )}
+                </div>
+              </Link>
+            </div>
 
           </div>
         </div>
@@ -412,17 +406,23 @@ export default function HomePage() {
             <span className="text-xs text-slate-400 tracking-wide font-medium mono-font">Refreshed real-time</span>
           </div>
           <div className="flex flex-col gap-2">
-            {recentActivities.map((act, idx) => (
-              <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors gap-2 group cursor-default">
+            {!loading && liveActivities.length > 0 ? liveActivities.map((act, idx) => (
+              <Link key={idx} to={`/blog/${act.slug}`} className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors gap-2 group">
                 <div className="flex items-center gap-3">
-                  <img src={act.avatar} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-slate-100 group-hover:ring-violet-200 transition-all" />
+                  {act.avatar ? (
+                    <img src={act.avatar} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-slate-100 group-hover:ring-violet-200 transition-all" />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-violet-100 text-violet-700 flex items-center justify-center text-xs font-bold ring-2 ring-slate-100">{act.user?.[0]}</div>
+                  )}
                   <p className="text-sm text-slate-600">
                     <strong className="text-slate-900 font-semibold">{act.user}</strong> <span className="text-slate-400 font-medium">{act.action}</span> <span className="text-violet-600 font-medium">"{act.article}"</span>
                   </p>
                 </div>
                 <span className="text-xs text-slate-400 self-end sm:self-auto mono-font">{act.time}</span>
-              </div>
-            ))}
+              </Link>
+            )) : (
+              <p className="text-sm text-slate-400 text-center py-4">No recent activity yet.</p>
+            )}
           </div>
         </div>
       </section>
@@ -444,56 +444,66 @@ export default function HomePage() {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="border border-slate-200 rounded-2xl p-4 bg-white animate-pulse">
-                <div className="bg-slate-200 rounded-xl aspect-[16/10] w-full mb-4" />
-                <div className="h-4 bg-slate-200 rounded w-1/3 mb-2" />
-                <div className="h-6 bg-slate-200 rounded w-3/4 mb-3" />
-                <div className="h-4 bg-slate-200 rounded w-full" />
-                <div className="flex items-center gap-2 mt-4">
-                  <div className="w-8 h-8 bg-slate-200 rounded-full" />
-                  <div className="h-3 bg-slate-200 rounded w-24" />
+              <div key={i} className="bg-white border border-slate-200 rounded-2xl overflow-hidden animate-pulse">
+                <div className="aspect-[16/10] bg-slate-200" />
+                <div className="p-5 space-y-3">
+                  <div className="h-3 bg-slate-200 rounded w-1/3" />
+                  <div className="h-5 bg-slate-200 rounded w-3/4" />
+                  <div className="h-4 bg-slate-200 rounded w-full" />
                 </div>
               </div>
             ))}
           </div>
         ) : recentPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recentPosts.map((blog, idx) => (
-              <div key={blog._id} className="group bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-slate-300">
-                <Link to={`/blog/${blog.slug}`} className="block">
-                  <div className="relative aspect-[16/10] overflow-hidden">
-                    <LazyImage 
-                      src={blog.coverImage} 
-                      alt={blog.title} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      id={blog._id}
-                      index={idx + 1}
-                    />
-                    <div className="absolute top-3 left-3 z-10">
-                      <span className="bg-violet-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md">{blog.category?.name || 'Article'}</span>
+            {recentPosts.map((blog) => (
+              <article key={blog._id} className="group bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-slate-300">
+                <Link to={`/blog/${blog.slug}`} className="block relative aspect-[16/10] overflow-hidden cursor-pointer">
+                  <LazyImage
+                    src={blog.coverImage}
+                    alt={blog.title}
+                    className="w-full h-full"
+                  />
+                  {blog.category?.name && (
+                    <div className="absolute top-3 left-3 z-10 pointer-events-none">
+                      <span className="bg-violet-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md">{blog.category.name}</span>
                     </div>
-                  </div>
-                  <div className="p-5">
+                  )}
+                </Link>
+                <div className="p-5">
+                  <Link to={`/blog/${blog.slug}`} className="block">
                     <div className="flex items-center gap-2 text-xs text-slate-400 mb-2">
                       <span>{format(new Date(blog.createdAt), 'MMM d, yyyy')}</span>
-                      <span>•</span>
-                      <span>{blog.readTime} min read</span>
+                      {blog.readTime && (
+                        <>
+                          <span>•</span>
+                          <span>{blog.readTime} min read</span>
+                        </>
+                      )}
                     </div>
                     <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-2 group-hover:text-violet-600 transition-colors">{blog.title}</h3>
-                    <p className="text-sm text-slate-500 line-clamp-2">{blog.excerpt || 'Discover insights and expert knowledge from industry professionals...'}</p>
-                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+                    {blog.excerpt && (
+                      <p className="text-sm text-slate-500 line-clamp-2">{blog.excerpt}</p>
+                    )}
+                  </Link>
+                  <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+                    {blog.author?.name && (
                       <div className="flex items-center gap-2">
-                        <img src={blog.author?.avatar || 'https://randomuser.me/api/portraits/men/1.jpg'} className="w-6 h-6 rounded-full object-cover" alt="" />
-                        <span className="text-xs font-medium text-slate-700">{blog.author?.name}</span>
+                        {blog.author?.avatar && (
+                          <img src={blog.author.avatar} className="w-6 h-6 rounded-full object-cover" alt="" />
+                        )}
+                        <span className="text-xs font-medium text-slate-700">{blog.author.name}</span>
                       </div>
+                    )}
+                    {blog.views > 0 && (
                       <div className="flex items-center gap-1 text-slate-400">
-                        <Heart size={14} className="group-hover:fill-red-500 group-hover:text-red-500 transition-colors" />
-                        <span className="text-xs">{Math.floor(Math.random() * 100) + 20}</span>
+                        <Eye size={14} />
+                        <span className="text-xs">{blog.views}</span>
                       </div>
-                    </div>
+                    )}
                   </div>
-                </Link>
-              </div>
+                </div>
+              </article>
             ))}
           </div>
         ) : (
