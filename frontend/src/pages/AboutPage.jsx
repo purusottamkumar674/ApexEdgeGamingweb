@@ -71,7 +71,7 @@ export default function AboutPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
       
       {/* Hero Section - STRICT 90% SCREEN HEIGHT (90vh) */}
-      <div className="relative overflow-hidden h-[90vh] w-full bg-slate-900">
+      <div className="relative overflow-hidden h-[110vh] w-full bg-slate-900">
         
         {/* Full Screen Image Layer Stretched Perfectly */}
         <div className="absolute inset-0 w-full h-full">
