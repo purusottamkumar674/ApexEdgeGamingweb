@@ -1,281 +1,162 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-
-// lucide icons (UI icons)
+import { Globe, ChevronDown } from 'lucide-react';
 import { 
-  Heart, ArrowRight, Mail, MapPin, Phone, Clock,
-  Shield, Zap, Crown
-} from 'lucide-react';
-
-// social icons (react-icons)
-import { 
-  FaFacebook, 
   FaInstagram, 
   FaTwitter, 
-  FaGithub, 
   FaYoutube, 
-  FaLinkedin 
+  FaFacebook, 
+  FaTiktok, 
+  FaDiscord, 
+  FaTwitch 
 } from "react-icons/fa";
 
 export default function Footer() {
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    if (email) {
-      setSubscribed(true);
-      setTimeout(() => setSubscribed(false), 3000);
-      setEmail('');
-    }
-  };
-
-  const currentYear = new Date().getFullYear();
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <footer className="relative bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 text-gray-300 mt-20 overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 -right-64 w-96 h-96 bg-purple-600 rounded-full blur-3xl opacity-10 animate-pulse-slow"></div>
-        <div className="absolute bottom-0 -left-64 w-96 h-96 bg-pink-600 rounded-full blur-3xl opacity-10 animate-pulse-slower"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-600 rounded-full blur-3xl opacity-5 animate-pulse"></div>
+    /* Footer layer viewport management */
+    <footer className="relative bg-black text-white font-sans w-full overflow-hidden select-none min-h-[100vh] flex flex-col justify-between">
+      
+      {/* BACKGROUND COLLAGE IMAGE */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none transform scale-100 object-cover"
+        style={{ 
+          backgroundImage: `url('/rockstar.png')`,
+          backgroundPosition: 'center 20%',
+        }}
+      />
+
+      {/* 1. HERO/SUPPORT TOP SECTION (MAXIMUM DYNAMIC GRID RESPONSIVENESS) */}
+      <div className="relative z-10 flex-grow flex flex-col items-center justify-center text-center px-4 sm:px-6 pt-32 sm:pt-40 lg:pt-48 pb-24 sm:pb-32 lg:pb-36 backdrop-brightness-95">
+        
+        {/* Rockstar Style Logo Icon — Responsive Font Sizes Added */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-5 drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] px-2">
+          <span className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter italic text-white selection:bg-amber-500 text-center sm:text-left">
+            ApexEdgeGaming<span className="text-amber-500 font-sans not-italic font-normal text-2xl sm:text-3xl md:text-4xl ml-0.5">★</span>
+          </span>
+          <span className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-zinc-100">Support</span>
+        </div>
+        
+        {/* Subtitle */}
+        <p className="text-zinc-200 text-sm sm:text-base md:text-lg max-w-lg mx-auto leading-relaxed mb-8 sm:mb-10 tracking-wide font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] px-4">
+          Get help with issues, browse common solutions, view service status updates, and more.
+        </p>
+
+        {/* Big White Capsule Button */}
+        <button className="bg-white text-black hover:bg-zinc-200 text-sm sm:text-[15px] font-bold py-3 sm:py-3.5 px-8 sm:px-10 rounded-full transition-all duration-200 tracking-wide shadow-2xl active:scale-98 cursor-pointer border border-transparent">
+          Get Support
+        </button>
       </div>
-      
-      {/* Grid Pattern */}
-      <div className='absolute inset-0 bg-[url("data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%23ffffff%22 fill-opacity=%220.02%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")] opacity-100'></div>
-      
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-12">
-          {/* Brand Section */}
-          <div className="lg:col-span-2">
-            <Link to="/" className="group flex items-center gap-3 mb-5">
-              {/* Logo Image Only - BookOpen removed */}
-              <img 
-                src="/logo.png" 
-                alt="Blogy Logo" 
-                className="h-10 w-auto object-contain"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.style.display = 'none';
-                  // Fallback text if logo not found
-                  const parent = e.target.parentElement;
-                  if (parent && !parent.querySelector('.logo-fallback')) {
-                    const span = document.createElement('span');
-                    span.className = 'logo-fallback font-playfair text-2xl font-bold text-white';
-                    span.innerHTML = 'Blogy<span class="text-purple-400">.</span>';
-                    parent.appendChild(span);
-                  }
-                }}
-              />
-            </Link>
-            <p className="text-gray-400 text-sm leading-relaxed mb-6 max-w-md">
-             ApexEdge Gaming is a next-generation esports and gaming platform built for passionate gamers, creators, and competitors. We bring together thrilling gameplay, competitive tournaments, and a vibrant community where every player can rise, connect, and dominate the game.
-            </p>
+
+      {/* BOTTOM WRAPPER */}
+      <div className="relative z-10 bg-black/85 backdrop-blur-md w-full pt-10 sm:pt-14 pb-8 sm:pb-10 border-t border-zinc-900/80">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-12">
+          
+          {/* 2. MIDDLE ROW: Main Navigation & Language Selector */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 sm:mb-12">
             
-            {/* Trust Badge */}
-            <div className="flex items-center gap-3 mb-6">
-              <div className="flex -space-x-2">
-                <img src="https://i.pravatar.cc/150?img=1" className="w-8 h-8 rounded-full ring-2 ring-gray-700" alt="User" />
-                <img src="https://i.pravatar.cc/150?img=2" className="w-8 h-8 rounded-full ring-2 ring-gray-700" alt="User" />
-                <img src="https://i.pravatar.cc/150?img=3" className="w-8 h-8 rounded-full ring-2 ring-gray-700" alt="User" />
-                <img src="https://i.pravatar.cc/150?img=4" className="w-8 h-8 rounded-full ring-2 ring-gray-700" alt="User" />
-              </div>
-              <div>
-                <div className="flex items-center gap-1">
-                  <span className="text-yellow-400 text-xs">★★★★★</span>
-                  <span className="text-xs text-gray-400">4.9/5</span>
+            {/* Quick Links with solid wrapping structure */}
+            <div className="flex flex-wrap items-center gap-x-6 sm:gap-x-8 gap-y-3 text-xs sm:text-[14px] font-bold tracking-wider uppercase text-zinc-100 w-full md:w-auto">
+              <Link to="/contact" className="hover:text-zinc-400 transition-colors duration-150">Contact</Link>
+              <Link to="/careers" className="hover:text-zinc-400 transition-colors duration-150">Careers</Link>
+              <Link to="/community-resources" className="hover:text-zinc-400 transition-colors duration-150">Community Resources</Link>
+              <Link to="/subscribe" className="hover:text-zinc-400 transition-colors duration-150">Subscribe</Link>
+            </div>
+
+            {/* Language Dropdown (Maintains stable grid tracking over layout switches) */}
+            <div className="relative w-full sm:w-auto">
+              <button 
+                onClick={() => setIsOpen(!isOpen)}
+                className="flex items-center gap-2 border border-zinc-800 bg-black/60 hover:bg-zinc-900/90 px-4 py-2.5 rounded-md hover:border-zinc-500 transition-all duration-150 text-xs font-bold tracking-widest uppercase cursor-pointer w-full sm:min-w-[135px] justify-between"
+              >
+                <div className="flex items-center gap-2 text-zinc-300">
+                  <Globe size={14} />
+                  <span>Hindi</span>
                 </div>
-                <p className="text-xs text-gray-500">Trusted by 10,000+ readers</p>
-              </div>
-            </div>
-            
-
-            
-            {/* Social Links */}
-            <div>
-              <h4 className="text-white text-sm font-semibold mb-3">Follow Us</h4>
-              <div className="flex gap-2">
-                <a href="https://x.com/apexedgegaming" className="group p-2 bg-gray-800 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-110">
-                 <FaTwitter size={16} className="text-gray-400 group-hover:text-white transition-colors" />
-                </a>
-                {/* <a href="#" className="group p-2 bg-gray-800 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-110">
-                  <FaLinkedin size={16} className="text-gray-400 group-hover:text-white transition-colors" />
-                </a> */}
-                <a href="https://www.instagram.com/apex_edge_gaming/" className="group p-2 bg-gray-800 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-110">
-                  <FaInstagram size={16} className="text-gray-400 group-hover:text-white transition-colors" />
-                </a>
-                <a href="https://www.facebook.com/Apexedgegaming" className="group p-2 bg-gray-800 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-110">
-                  <FaFacebook size={16} className="text-gray-400 group-hover:text-white transition-colors" />
-                </a>
-                <a href="https://www.youtube.com/@ApexEdgeGaming" className="group p-2 bg-gray-800 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 transition-all duration-300 hover:scale-110">
-                  <FaYoutube size={16} className="text-gray-400 group-hover:text-white transition-colors" />
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h4 className="text-white font-semibold mb-5 flex items-center gap-2">
-              <Zap size={14} className="text-purple-400" />
-              Quick Links
-            </h4>
-            <ul className="space-y-3 text-sm">
-              <li><Link to="/" className="text-gray-400 hover:text-purple-400 transition-all duration-300 hover:translate-x-1 inline-flex items-center gap-1">Home <ArrowRight size={12} /></Link></li>
-              <li><Link to="/blog" className="text-gray-400 hover:text-purple-400 transition-all duration-300 hover:translate-x-1 inline-flex items-center gap-1">Articles <ArrowRight size={12} /></Link></li>
-              <li><Link to="/about" className="text-gray-400 hover:text-purple-400 transition-all duration-300 hover:translate-x-1 inline-flex items-center gap-1">About Us <ArrowRight size={12} /></Link></li>
-              <li><Link to="/contact" className="text-gray-400 hover:text-purple-400 transition-all duration-300 hover:translate-x-1 inline-flex items-center gap-1">Contact <ArrowRight size={12} /></Link></li>
-              <li><Link to="/privacy" className="text-gray-400 hover:text-purple-400 transition-all duration-300 hover:translate-x-1 inline-flex items-center gap-1">Privacy Policy <ArrowRight size={12} /></Link></li>
-            </ul>
-          </div>
-
-          {/* Categories */}
-          <div>
-            <h4 className="text-white font-semibold mb-5 flex items-center gap-2">
-              <Crown size={14} className="text-purple-400" />
-              Top Categories
-            </h4>
-            <ul className="space-y-3 text-sm">
-              <li><Link to="/category/Technology" className="text-gray-400 hover:text-purple-400 transition-all duration-300 hover:translate-x-1 inline-flex items-center gap-1">Technology <span className="text-gray-600 text-xs">(234)</span></Link></li>
-              <li><Link to="/category/Design" className="text-gray-400 hover:text-purple-400 transition-all duration-300 hover:translate-x-1 inline-flex items-center gap-1">Design <span className="text-gray-600 text-xs">(189)</span></Link></li>
-              <li><Link to="/category/Lifestyle" className="text-gray-400 hover:text-purple-400 transition-all duration-300 hover:translate-x-1 inline-flex items-center gap-1">Lifestyle <span className="text-gray-600 text-xs">(156)</span></Link></li>
-              <li><Link to="/category/Business" className="text-gray-400 hover:text-purple-400 transition-all duration-300 hover:translate-x-1 inline-flex items-center gap-1">Business <span className="text-gray-600 text-xs">(98)</span></Link></li>
-              <li><Link to="/category/Travel" className="text-gray-400 hover:text-purple-400 transition-all duration-300 hover:translate-x-1 inline-flex items-center gap-1">Travel <span className="text-gray-600 text-xs">(76)</span></Link></li>
-            </ul>
-          </div>
-
-          {/* Contact & Newsletter */}
-          <div>
-            <h4 className="text-white font-semibold mb-5 flex items-center gap-2">
-              <Mail size={14} className="text-purple-400" />
-              Stay Updated
-            </h4>
-            
-            {/* Contact Info */}
-            <div className="space-y-4 mb-6">
-
-  {/* Email */}
-  <div className="flex items-start gap-3 text-sm text-gray-400">
-    <Mail size={16} className="text-purple-400 mt-1 flex-shrink-0" />
-    <span className="leading-relaxed break-words">
-      apexedgegaming@gmail.com
-    </span>
-  </div>
-
-  {/* Phone */}
-  <div className="flex items-start gap-3 text-sm text-gray-400">
-    <Phone size={16} className="text-purple-400 mt-1 flex-shrink-0" />
-    <span className="leading-relaxed">
-      +91 9031062295
-    </span>
-  </div>
-
-  {/* Address */}
-  <div className="flex items-start gap-3 text-sm text-gray-400">
-    <MapPin size={16} className="text-purple-400 mt-1 flex-shrink-0" />
-    <span className="leading-relaxed break-words">
-      Kidwaipuri Krishna Park, Patna, Bihar, India
-    </span>
-  </div>
-
-  {/* Time */}
-  <div className="flex items-start gap-3 text-sm text-gray-400">
-    <Clock size={16} className="text-purple-400 mt-1 flex-shrink-0" />
-    <span className="leading-relaxed">
-      Mon - Fri: 9 AM - 6 PM
-    </span>
-  </div>
-
-</div>
-
-            {/* Newsletter Form */}
-            <form onSubmit={handleSubscribe} className="mt-4">
-              <p className="text-sm text-gray-400 mb-3">Get the best articles delivered to your inbox.</p>
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Your email address"
-                  className="flex-1 bg-gray-800 text-sm px-4 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-200 placeholder-gray-500 border border-gray-700"
-                  required
-                />
-                <button 
-                  type="submit"
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-4 py-2.5 rounded-xl transition-all duration-300 hover:scale-105 flex items-center gap-1 group"
-                >
-                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                </button>
-              </div>
-              {subscribed && (
-                <p className="text-green-400 text-xs mt-2 animate-fade-in-up">
-                  ✓ Subscribed successfully!
-                </p>
+                <ChevronDown size={12} className={`text-zinc-400 transform transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {isOpen && (
+                <div className="absolute left-0 sm:left-auto sm:right-0 bottom-full mb-2 w-full bg-zinc-950 border border-zinc-800 rounded-md shadow-2xl overflow-hidden z-50 text-xs font-semibold">
+                  <div className="px-4 py-2.5 hover:bg-zinc-900 cursor-pointer text-zinc-400 hover:text-white">Hindi</div>
+                  <div className="px-4 py-2.5 hover:bg-zinc-900 cursor-pointer text-zinc-400 hover:text-white">English</div>
+                  {/* <div className="px-4 py-2.5 hover:bg-zinc-900 cursor-pointer text-zinc-400 hover:text-white">Français</div> */}
+                </div>
               )}
-            </form>
+            </div>
           </div>
-        </div>
 
-        {/* Footer Bottom */}
-        <div className="border-t border-gray-800 mt-12 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-center md:text-left">
-              <p className="text-xs text-gray-500">
-                © {currentYear} ApexEdge Gaming. All rights reserved. Made with 
-                <Heart size={10} className="inline mx-1 text-red-500 animate-pulse" /> 
-                by the ApexEdge Gaming team
-              </p>
-            </div>
+          {/* 3. LEGAL & SOCIAL ROW */}
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 lg:gap-8 mb-10 sm:mb-12 pt-2 w-full">
             
-            <div className="flex items-center gap-6">
-              <Link to="/privacy" className="text-xs text-gray-500 hover:text-purple-400 transition-colors">Privacy Policy</Link>
-              <Link to="/terms" className="text-xs text-gray-500 hover:text-purple-400 transition-colors">Terms of Service</Link>
-              <Link to="/cookies" className="text-xs text-gray-500 hover:text-purple-400 transition-colors">Cookie Policy</Link>
+            {/* Legal Policy Links */}
+            <div className="flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-2.5 text-[11px] sm:text-xs font-bold text-zinc-400 tracking-wide w-full lg:max-w-4xl">
+              <Link to="/corporate" className="hover:text-white transition-colors duration-150">Corporate</Link>
+              <Link to="/privacy" className="hover:text-white transition-colors duration-150">Privacy</Link>
+              <Link to="/cookie-settings" className="hover:text-white transition-colors duration-150">Cookie Settings</Link>
+              <Link to="/cookie-policy" className="hover:text-white transition-colors duration-150">Cookie Policy</Link>
+              <Link to="/legal" className="hover:text-white transition-colors duration-150">Legal</Link>
+              <Link to="/do-not-sell" className="hover:text-white transition-colors duration-150">Do Not Sell or Share My Personal Information</Link>
             </div>
-            
-            <div className="flex items-center gap-2">
-              <Shield size={12} className="text-gray-500" />
-              <span className="text-xs text-gray-500">Secure Connection</span>
+
+            {/* Social Media Links with wrapping rules */}
+            <div className="flex flex-wrap items-center gap-5 sm:gap-6 text-zinc-400 pt-2 lg:pt-0">
+              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-white transition-colors duration-150">
+                <FaInstagram size={18} />
+              </a>
+              <a href="https://x.com" target="_blank" rel="noreferrer" className="hover:text-white transition-colors duration-150">
+                <FaTwitter size={16} />
+              </a>
+              <a href="https://youtube.com" target="_blank" rel="noreferrer" className="hover:text-white transition-colors duration-150">
+                <FaYoutube size={18} />
+              </a>
+              <a href="https://facebook.com" target="_blank" rel="noreferrer" className="hover:text-white transition-colors duration-150">
+                <FaFacebook size={18} />
+              </a>
+              {/* <a href="https://tiktok.com" target="_blank" rel="noreferrer" className="hover:text-white transition-colors duration-150">
+                <FaTiktok size={16} />
+              </a> */}
+              {/* <a href="https://discord.com" target="_blank" rel="noreferrer" className="hover:text-white transition-colors duration-150">
+                <FaDiscord size={18} />
+              </a> */}
+              {/* <a href="https://twitch.tv" target="_blank" rel="noreferrer" className="hover:text-white transition-colors duration-150">
+                <FaTwitch size={18} />
+              </a> */}
             </div>
           </div>
+
+          {/* 4. METADATA ROW: Studio & Roman Code */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-[10px] sm:text-[11px] font-bold text-zinc-600 tracking-widest uppercase border-t border-zinc-900/60 pt-6 w-full">
+            <div className="text-zinc-500">
+              ApexEdge Gaming
+            </div>
+            <div className="flex items-center gap-x-4 sm:gap-x-5 gap-y-1.5 flex-wrap font-medium text-zinc-500">
+              <span>India</span>
+              <span>Bihar</span>
+              <span>Patna</span>
+              <span>101 City Plaza, Kidwaipuri</span>
+            </div>
+            <div className="font-sans tracking-wider text-zinc-500 text-xs pt-1 sm:pt-0">
+  <span className="font-bold text-zinc-600 uppercase tracking-widest mr-1">Email:</span>
+  <a 
+    href="mailto:apexedgegaming@gmail.com" 
+    className="text-zinc-400 hover:text-white transition-colors duration-150 underline decoration-zinc-700 hover:decoration-white underline-offset-4"
+  >
+    apexedgegaming@gmail.com
+  </a>
+</div>
+          </div>
+
+          {/* Hidden SEO/Data Address Container */}
+          <div className="sr-only">
+            <p>Kidwaipuri Krishna Park, Patna, Bihar, India</p>
+            <p>+91 9031062295</p>
+            <p>apexedgegaming@gmail.com</p>
+          </div>
+
         </div>
       </div>
-      
-      <style>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        @keyframes pulse-slow {
-          0%, 100% { opacity: 0.1; transform: scale(1); }
-          50% { opacity: 0.15; transform: scale(1.1); }
-        }
-        
-        @keyframes pulse-slower {
-          0%, 100% { opacity: 0.08; transform: scale(1); }
-          50% { opacity: 0.12; transform: scale(1.2); }
-        }
-        
-        .animate-fade-in-up {
-          animation: fadeInUp 0.5s ease-out forwards;
-        }
-        
-        .animate-pulse-slow {
-          animation: pulse-slow 4s ease-in-out infinite;
-        }
-        
-        .animate-pulse-slower {
-          animation: pulse-slower 6s ease-in-out infinite;
-        }
-      `}</style>
     </footer>
   );
 }

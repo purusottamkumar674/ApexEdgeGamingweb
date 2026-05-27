@@ -12,6 +12,13 @@ import { useState, useEffect } from 'react'
 
 export default function AboutPage() {
   const [scrolled, setScrolled] = useState(false)
+  const [currentSlide, setCurrentSlide] = useState(0)
+
+  // Array of images for the background header slider
+  const sliderImages = [
+    "about2.png",
+    "about1.png"
+  ]
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,6 +28,14 @@ export default function AboutPage() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Auto-advance slider every 4 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % sliderImages.length)
+    }, 4000)
+    return () => clearInterval(timer)
+  }, [sliderImages.length])
+
   const stats = [
     { label: 'Happy Readers', value: '50K+', icon: <Users size={24} />, color: 'from-blue-500 to-cyan-500', description: 'Active monthly readers' },
     { label: 'Articles Published', value: '1,200+', icon: <BookOpen size={24} />, color: 'from-green-500 to-emerald-500', description: 'Quality content' },
@@ -28,14 +43,14 @@ export default function AboutPage() {
     { label: 'Countries Reached', value: '80+', icon: <Globe size={24} />, color: 'from-orange-500 to-red-500', description: 'Global community' },
   ]
 
- const teamMembers = [
-  { name: 'Aarav Sharma', role: 'Founder & CEO', bio: 'Former tech journalist with 10+ years of experience. Passionate about storytelling.', avatar: 'https://randomuser.me/api/portraits/women/1.jpg', social: { twitter: '#', linkedin: '#' } },
-  { name: 'Rohan Verma', role: 'Head of Content', bio: 'Award-winning writer and editor. Loves creating engaging narratives.', avatar: 'https://randomuser.me/api/portraits/men/2.jpg', social: { twitter: '#', linkedin: '#' } },
-  { name: 'Ananya Gupta', role: 'Creative Director', bio: 'Design enthusiast who believes in the power of visual storytelling.', avatar: 'https://randomuser.me/api/portraits/women/3.jpg', social: { twitter: '#', linkedin: '#' } },
-  { name: 'Karan Patel', role: 'Lead Developer', bio: 'Tech wizard building amazing experiences for our readers.', avatar: 'https://randomuser.me/api/portraits/men/4.jpg', social: { twitter: '#', linkedin: '#' } },
-  { name: 'Priya Singh', role: 'Community Manager', bio: 'Connecting with readers and building a thriving community.', avatar: 'https://randomuser.me/api/portraits/women/5.jpg', social: { twitter: '#', linkedin: '#' } },
-  { name: 'Vikram Yadav', role: 'SEO Specialist', bio: 'Making sure our content reaches the right audience.', avatar: 'https://randomuser.me/api/portraits/men/6.jpg', social: { twitter: '#', linkedin: '#' } },
-];
+  const teamMembers = [
+    { name: 'Aarav Sharma', role: 'Founder & CEO', bio: 'Former tech journalist with 10+ years of experience. Passionate about storytelling.', avatar: 'https://randomuser.me/api/portraits/women/1.jpg', social: { twitter: '#', linkedin: '#' } },
+    { name: 'Rohan Verma', role: 'Head of Content', bio: 'Award-winning writer and editor. Loves creating engaging narratives.', avatar: 'https://randomuser.me/api/portraits/men/2.jpg', social: { twitter: '#', linkedin: '#' } },
+    { name: 'Ananya Gupta', role: 'Creative Director', bio: 'Design enthusiast who believes in the power of visual storytelling.', avatar: 'https://randomuser.me/api/portraits/women/3.jpg', social: { twitter: '#', linkedin: '#' } },
+    { name: 'Karan Patel', role: 'Lead Developer', bio: 'Tech wizard building amazing experiences for our readers.', avatar: 'https://randomuser.me/api/portraits/men/4.jpg', social: { twitter: '#', linkedin: '#' } },
+    { name: 'Priya Singh', role: 'Community Manager', bio: 'Connecting with readers and building a thriving community.', avatar: 'https://randomuser.me/api/portraits/women/5.jpg', social: { twitter: '#', linkedin: '#' } },
+    { name: 'Vikram Yadav', role: 'SEO Specialist', bio: 'Making sure our content reaches the right audience.', avatar: 'https://randomuser.me/api/portraits/men/6.jpg', social: { twitter: '#', linkedin: '#' } },
+  ];
 
   const values = [
     { title: 'Quality First', icon: <Crown size={24} />, description: 'We never compromise on content quality. Every article goes through rigorous review.', color: 'from-yellow-500 to-orange-500' },
@@ -55,62 +70,64 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
       
-      {/* Hero Section - Premium BIG Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 min-h-[70vh] flex items-center">
+      {/* Hero Section - STRICT 90% SCREEN HEIGHT (90vh) */}
+      <div className="relative overflow-hidden h-[90vh] w-full bg-slate-900">
         
-        {/* Animated Background Orbs - Larger */}
-        <div className="absolute inset-0">
-          <div className="absolute top-0 -right-40 w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-30 animate-pulse-slow"></div>
-          <div className="absolute bottom-0 -left-40 w-96 h-96 bg-pink-500 rounded-full blur-3xl opacity-30 animate-pulse-slower"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-500 rounded-full blur-3xl opacity-20 animate-pulse"></div>
-          <div className="absolute top-20 right-20 w-56 h-56 bg-yellow-500 rounded-full blur-3xl opacity-20 animate-float"></div>
-          <div className="absolute bottom-20 left-20 w-56 h-56 bg-cyan-500 rounded-full blur-3xl opacity-20 animate-float-delay"></div>
-          
-          {/* Grid Pattern Overlay */}
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%239C92AC%22 fill-opacity=%220.04%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-100"></div>
+        {/* Full Screen Image Layer Stretched Perfectly */}
+        <div className="absolute inset-0 w-full h-full">
+          {sliderImages.map((img, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out ${
+                currentSlide === index ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
+              } transition-transform duration-[4000ms]`}
+              style={{ backgroundImage: `url('${img}')` }}
+            />
+          ))}
         </div>
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32 w-full">
-          <div className="text-center max-w-4xl mx-auto">
-            {/* Premium Badge */}
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-6 py-2.5 mb-8 border border-white/20 shadow-lg animate-float">
-              <Sparkles size={16} className="text-yellow-300" />
-              <span className="text-base font-medium text-white">Welcome to ApexEdge Gaming</span>
-            </div>
-            
-            {/* Main Heading - Larger */}
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold mb-8 text-white drop-shadow-2xl leading-tight">
-              Our Story &{' '}
-              <span className="bg-gradient-to-r from-yellow-300 via-pink-300 to-purple-300 bg-clip-text text-transparent">
-                Mission
-              </span>
-            </h1>
-            
-            {/* Description - Larger and clearer */}
-            <p className="text-purple-100 text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed">
-              We're on a mission to democratize knowledge and connect curious minds through high-quality, 
-              insightful content that inspires, educates, and empowers.
-            </p>
-            
-            {/* Scroll Indicator */}
-            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce hidden md:block">
-              <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-                <div className="w-1 h-2 bg-white/50 rounded-full mt-2 animate-scroll"></div>
-              </div>
+        {/* Subtle dynamic background highlights overlay */}
+        <div className="absolute inset-0 pointer-events-none z-10">
+          <div className="absolute top-0 -right-40 w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-10 animate-pulse-slow"></div>
+          <div className="absolute bottom-0 -left-40 w-96 h-96 bg-pink-500 rounded-full blur-3xl opacity-10 animate-pulse-slower"></div>
+          
+          {/* Transparent Grid Overlay */}
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%239C92AC%22 fill-opacity=%220.02%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-100"></div>
+        </div>
+        
+        {/* UI Controls Layer - Adjusted for 90vh layout */}
+        <div className="absolute inset-x-0 bottom-0 z-20 pb-28 flex flex-col items-center justify-end h-full bg-gradient-to-t from-black/40 via-transparent to-transparent">
+          
+          {/* Big & Bold Slider Indicators */}
+          <div className="flex gap-3 backdrop-blur-md bg-black/10 px-4 py-2 rounded-full border border-white/10">
+            {sliderImages.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                className={`w-3.5 h-3.5 rounded-full transition-all duration-300 ${currentSlide === index ? 'bg-white w-12 shadow-lg' : 'bg-white/30 hover:bg-white/60'}`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+
+          {/* Scroll Indicator */}
+          <div className="absolute bottom-36 left-1/2 transform -translate-x-1/2 animate-bounce hidden md:block">
+            <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
+              <div className="w-1 h-2 bg-white/80 rounded-full mt-2 animate-scroll"></div>
             </div>
           </div>
         </div>
         
-        {/* Wave Divider */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="w-full">
+        {/* Smooth Transition Wave Divider */}
+        <div className="absolute bottom-0 left-0 right-0 pointer-events-none z-20">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="w-full h-auto min-h-[40px]">
             <path fill="#f8fafc" fillOpacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
           </svg>
         </div>
       </div>
 
       {/* Stats Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-30">
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((stat, idx) => (
             <div key={idx} className="group bg-white rounded-2xl p-6 text-center shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-100">
@@ -125,7 +142,7 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Our Story Section - Enhanced */}
+      {/* Our Story Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-6">
@@ -167,7 +184,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Mission & Vision - Enhanced */}
+      {/* Mission & Vision */}
       <section className="bg-gradient-to-br from-purple-50 to-pink-50 py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -195,7 +212,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Core Values - Enhanced */}
+      {/* Core Values */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full px-4 py-2 mb-4">
@@ -220,7 +237,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Journey Timeline - Enhanced */}
+      {/* Journey Timeline */}
       <section className="bg-gradient-to-br from-gray-50 to-white py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -258,7 +275,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Team Section - Enhanced */}
+      {/* Team Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full px-4 py-2 mb-4">
@@ -299,7 +316,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Newsletter CTA - Enhanced */}
+      {/* Newsletter CTA */}
       <section className="bg-gradient-to-br from-gray-900 to-gray-800 py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-3xl overflow-hidden shadow-2xl">
@@ -339,28 +356,13 @@ export default function AboutPage() {
 
       <style>{`
         @keyframes pulse-slow {
-          0%, 100% { opacity: 0.3; transform: scale(1); }
-          50% { opacity: 0.4; transform: scale(1.1); }
+          0%, 100% { opacity: 0.10; transform: scale(1); }
+          50% { opacity: 0.15; transform: scale(1.05); }
         }
         
         @keyframes pulse-slower {
-          0%, 100% { opacity: 0.3; transform: scale(1); }
-          50% { opacity: 0.35; transform: scale(1.15); }
-        }
-        
-        @keyframes pulse {
-          0%, 100% { opacity: 0.2; transform: scale(1); }
-          50% { opacity: 0.25; transform: scale(1.2); }
-        }
-        
-        @keyframes float {
-          0%, 100% { transform: translateY(0) translateX(0); }
-          50% { transform: translateY(-20px) translateX(15px); }
-        }
-        
-        @keyframes float-delay {
-          0%, 100% { transform: translateY(0) translateX(0); }
-          50% { transform: translateY(-25px) translateX(-15px); }
+          0%, 100% { opacity: 0.10; transform: scale(1); }
+          50% { opacity: 0.15; transform: scale(1.08); }
         }
         
         @keyframes scroll {
@@ -374,23 +376,11 @@ export default function AboutPage() {
         }
         
         .animate-pulse-slow {
-          animation: pulse-slow 4s ease-in-out infinite;
+          animation: pulse-slow 5s ease-in-out infinite;
         }
         
         .animate-pulse-slower {
-          animation: pulse-slower 6s ease-in-out infinite;
-        }
-        
-        .animate-pulse {
-          animation: pulse 3s ease-in-out infinite;
-        }
-        
-        .animate-float {
-          animation: float 8s ease-in-out infinite;
-        }
-        
-        .animate-float-delay {
-          animation: float-delay 10s ease-in-out infinite;
+          animation: pulse-slower 7s ease-in-out infinite;
         }
         
         .animate-scroll {
