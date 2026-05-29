@@ -1,11 +1,11 @@
 export default function CategoriesSection() {
   // 5 Image Cards ka data
   const cards = [
-    { title: "ApexEdge Gaming", count: "120 Articles", img: "/game17.png" },
-    { title: "ApexEdge Gaming", count: "85 Articles", img: "game16.png" },
-    { title: "ApexEdge Gaming", count: "45 Articles", img: "game15.png" },
-    { title: "ApexEdge Gaming", count: "60 Articles", img: "game14.png" },
-    { title: "ApexEdge Gaming", count: "95 Articles", img: "game13.png" },
+    { title: "Battle Royale", count: "120 Articles", img: "/game17.png" },
+    { title: "Action Games", count: "85 Articles", img: "game16.png" },
+    { title: "Adventure Games", count: "45 Articles", img: "game15.png" },
+    { title: "Racing Games", count: "60 Articles", img: "game14.png" },
+    { title: "Strategy Games", count: "95 Articles", img: "game13.png" },
   ];
 
   return (

@@ -33,7 +33,7 @@ export default function Footer() {
         {/* Rockstar Style Logo Icon — Responsive Font Sizes Added */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-5 drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] px-2">
           <span className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter italic text-white selection:bg-amber-500 text-center sm:text-left">
-            ApexEdgeGaming<span className="text-amber-500 font-sans not-italic font-normal text-2xl sm:text-3xl md:text-4xl ml-0.5">★</span>
+            ApexEdge Gaming<span className="text-amber-500 font-sans not-italic font-normal text-2xl sm:text-3xl md:text-4xl ml-0.5">★</span>
           </span>
           <span className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-zinc-100">Support</span>
         </div>
@@ -81,7 +81,6 @@ export default function Footer() {
                 <div className="absolute left-0 sm:left-auto sm:right-0 bottom-full mb-2 w-full bg-zinc-950 border border-zinc-800 rounded-md shadow-2xl overflow-hidden z-50 text-xs font-semibold">
                   <div className="px-4 py-2.5 hover:bg-zinc-900 cursor-pointer text-zinc-400 hover:text-white">Hindi</div>
                   <div className="px-4 py-2.5 hover:bg-zinc-900 cursor-pointer text-zinc-400 hover:text-white">English</div>
-                  {/* <div className="px-4 py-2.5 hover:bg-zinc-900 cursor-pointer text-zinc-400 hover:text-white">Français</div> */}
                 </div>
               )}
             </div>
@@ -114,15 +113,6 @@ export default function Footer() {
               <a href="https://facebook.com" target="_blank" rel="noreferrer" className="hover:text-white transition-colors duration-150">
                 <FaFacebook size={18} />
               </a>
-              {/* <a href="https://tiktok.com" target="_blank" rel="noreferrer" className="hover:text-white transition-colors duration-150">
-                <FaTiktok size={16} />
-              </a> */}
-              {/* <a href="https://discord.com" target="_blank" rel="noreferrer" className="hover:text-white transition-colors duration-150">
-                <FaDiscord size={18} />
-              </a> */}
-              {/* <a href="https://twitch.tv" target="_blank" rel="noreferrer" className="hover:text-white transition-colors duration-150">
-                <FaTwitch size={18} />
-              </a> */}
             </div>
           </div>
 
@@ -138,14 +128,14 @@ export default function Footer() {
               <span>101 City Plaza, Kidwaipuri</span>
             </div>
             <div className="font-sans tracking-wider text-zinc-500 text-xs pt-1 sm:pt-0">
-  <span className="font-bold text-zinc-600 uppercase tracking-widest mr-1">Email:</span>
-  <a 
-    href="mailto:apexedgegaming@gmail.com" 
-    className="text-zinc-400 hover:text-white transition-colors duration-150 underline decoration-zinc-700 hover:decoration-white underline-offset-4"
-  >
-    apexedgegaming@gmail.com
-  </a>
-</div>
+              <span className="font-bold text-zinc-600 uppercase tracking-widest mr-1">Email:</span>
+              <a 
+                href="mailto:apexedgegaming@gmail.com" 
+                className="text-zinc-400 hover:text-white transition-colors duration-150 underline decoration-zinc-700 hover:decoration-white underline-offset-4"
+              >
+                apexedgegaming@gmail.com
+              </a>
+            </div>
           </div>
 
           {/* Hidden SEO/Data Address Container */}

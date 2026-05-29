@@ -8,462 +8,533 @@ import {
 } from 'lucide-react'
 
 import { FaTwitter, FaLinkedin } from "react-icons/fa";
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 export default function AboutPage() {
   const [scrolled, setScrolled] = useState(false)
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [visibleSections, setVisibleSections] = useState({})
 
-  // Array of images for the background header slider
   const sliderImages = [
     "about2.png",
     "about1.png"
   ]
 
-  // Balanced 6 structural alternating rows (1: Image Left, 2: Image Right, 3: Image Left...)
   const showcaseRows = [
     {
       id: 1,
-      badge: "Welcome to Los Santos",
-      title: "Grand Theft Auto V",
-      desc: "When a young street hustler, a retired bank robber, and a terrifying psychopath find themselves entangled with some of the most frightening and deranged elements of the criminal underworld, the U.S. government, and the entertainment industry, they must pull off a series of dangerous heists to survive.",
-      subText: "GTAV players on PC can migrate their Story Mode progress and GTA Online characters and progression to the newly upgraded version with a one-time migration matrix system.",
-      img: "blog2.png", 
-      imageOnLeft: true // Row 1: Image Left, Text Right
+      badge: "The Ultimate Gaming Hub",
+      title: "ApexEdge Gaming Ecosystem",
+      desc: "Welcome to the ultimate frontier of competitive media, granular performance mechanics, and underground gaming intelligence. We breakdown the barrier between hard-core frame analytics, esports statistics, and mainstream title news coverage.",
+      subText: "Our platform processes live patch matrices and telemetry updates across all high-performance gaming ecosystems, keeping our competitive squad optimized.",
+      img: "blog2.png",
+      imageOnLeft: true
     },
     {
       id: 2,
-      badge: "Ever-Evolving Universe",
-      title: "Grand Theft Auto Online",
-      desc: "Experience GTA Online, a dynamic and ever-evolving online universe for up to 30 players, where you can rise from street-level hustler to become a kingpin of your own massive criminal empire.",
-      subText: "Enjoy new high-performance vehicle upgrades and improvements like the Career Builder as well as all GTA Online gameplay upgrades, expansions, and content released since launch.",
+      badge: "Esports Infrastructure Node",
+      title: "Live Coverage & Match Analytics",
+      desc: "Experience premier mechanical breakdowns of critical multi-tiered esports tournament brackets. We deploy live strategy frameworks, detailed map control indices, and performance streams to give you the ultimate edge in every encounter.",
+      subText: "From localized open division trials to global major circuit championships, our analytical networks track game states frame-by-frame.",
       img: "blog1.png",
-      imageOnLeft: false // Row 2: Text Left, Image Right
+      imageOnLeft: false
     },
     {
       id: 3,
-      badge: "Los Santos Car Meet",
-      title: "Exclusive New Content",
-      desc: "Step into Hao's Special Works at the Los Santos Car Meet, featuring elite new upgrades and exclusive modifications. Take these high-performance vehicles into HSW races, new time trials, and more.",
-      subText: "Unlock premium performance calibrations and drift-tuned specifications engineered exclusively for next-generation framework execution pipelines.",
+      badge: "Hardware Telemetry Labs",
+      title: "Elite Optimization & Performance Labs",
+      desc: "Our automated test-beds push the absolute limits of multi-threaded console processing, custom PC graphics rendering pipelines, and frame-pacing profiles. We benchmark structural assets so your system stays configured.",
+      subText: "Unlock verified engine calibrations and drift-tuned controller mechanics engineered exclusively for next-generation gameplay execution pipelines.",
       img: "header2.png",
-      imageOnLeft: true // Row 3: Image Left, Text Right
+      imageOnLeft: true
     },
     {
       id: 4,
-      badge: "Heists & Dominance",
-      title: "Master Strategic Operations",
-      desc: "Assemble your crew and execute complex multi-tiered operational strikes. Coordinate across high-tech tactical hubs to target secure installations and decrypt global network nodes for ultimate rewards.",
-      subText: "Leverage advanced hardware support networks to manage high-yield ventures from safe locations concealed throughout urban grid structures.",
+      badge: "The Tactical Archive",
+      title: "Deep-Dive Strategy Databases",
+      desc: "Assemble your competitive division alignment with complete data driven precision. Our metadata stores index complex mechanical utilities, execute tier calculations, and economic team tracking setups.",
+      subText: "Leverage advanced hardware analytics to parse deep sandbox mechanics safely from distributed network server points.",
       img: "game1.png",
-      imageOnLeft: false // Row 4: Text Left, Image Right
+      imageOnLeft: false
     },
     {
       id: 5,
-      badge: "Corporate Enterprise",
-      title: "Executive Networks",
-      desc: "Establish your corporate headquarters, customize trading vaults, and manage commercial infrastructure networks. Protect assets from competitive trade syndicates through robust security configurations.",
-      subText: "Expand resource generation channels seamlessly by coordinating supply runs across multiple secure storage nodes distributed globally.",
+      badge: "Syndicate Alliance Network",
+      title: "Global Creator Pipeline Integration",
+      desc: "We coordinate a massive international ecosystem of competitive stream creators, structural mod developers, and broadcast analysts. Expand your digital presence using our tactical community nodes seamlessly.",
+      subText: "Protect community distribution channels across validated server hubs to ensure uninterrupted asset transmission lines.",
       img: "game12.png",
-      imageOnLeft: true // Row 5: Image Left, Text Right
+      imageOnLeft: true
     },
     {
       id: 6,
-      badge: "Elite Underworld",
-      title: "Nightlife & Underground Empires",
-      desc: "Dominate the underground network lines by operating premier hubs, tracking freight chains, and managing automated inventory storage layers. Streamline operations to keep supply structures solid.",
-      subText: "Optimize operational scaling to secure continuous high-priority data and capital flow generation without interruption.",
+      badge: "Alpha Meta Drops",
+      title: "Secure Patch Drops & Analytical Intelligence",
+      desc: "Dominate upcoming platform build updates by monitoring closed developer logs, balancing updates, and prototype weapon telemetry tables before they alter live tournament ecosystem metrics.",
+      subText: "Optimize preparation sequences seamlessly to maintain high-priority performance values across global leaderboards.",
       img: "game13.png",
-      imageOnLeft: false // Row 6: Text Left, Image Right
+      imageOnLeft: false
     }
   ]
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50)
-    }
+    const handleScroll = () => setScrolled(window.scrollY > 50)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Auto-advance slider every 4 seconds
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % sliderImages.length)
-    }, 4000)
+    }, 5000)
     return () => clearInterval(timer)
   }, [sliderImages.length])
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            setVisibleSections(prev => ({ ...prev, [entry.target.dataset.section]: true }))
+          }
+        })
+      },
+      { threshold: 0.15 }
+    )
+    document.querySelectorAll('[data-section]').forEach(el => observer.observe(el))
+    return () => observer.disconnect()
+  }, [])
+
   const stats = [
-    { label: 'Happy Readers', value: '50K+', icon: <Users size={24} />, color: 'from-purple-500 to-indigo-500', description: 'Active monthly readers' },
-    { label: 'Articles Published', value: '1,200+', icon: <BookOpen size={24} />, color: 'from-amber-500 to-orange-500', description: 'Quality content' },
-    { label: 'Expert Writers', value: '150+', icon: <Award size={24} />, color: 'from-pink-500 to-rose-500', description: 'From around the world' },
-    { label: 'Countries Reached', value: '80+', icon: <Globe size={24} />, color: 'from-cyan-500 to-blue-500', description: 'Global community' },
+    { label: 'Active Gamers Reached', value: '50K+', icon: <Users size={22} />, color: '#a855f7', bg: 'rgba(168,85,247,0.12)', description: 'Monthly network active nodes' },
+    { label: 'Tactical Intel Briefs', value: '1,200+', icon: <BookOpen size={22} />, color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', description: 'Elite structural mechanics' },
+    { label: 'Verified Meta Creators', value: '150+', icon: <Award size={22} />, color: '#ec4899', bg: 'rgba(236,72,153,0.12)', description: 'Pro broadcast tier partners' },
+    { label: 'International Grid Nodes', value: '80+', icon: <Globe size={22} />, color: '#06b6d4', bg: 'rgba(6,182,212,0.12)', description: 'Global analytical scope' },
   ]
 
   const teamMembers = [
-    { name: 'Aarav Sharma', role: 'Founder & CEO', bio: 'Former tech journalist with 10+ years of experience. Passionate about storytelling.', avatar: 'https://randomuser.me/api/portraits/women/1.jpg', social: { twitter: '#', linkedin: '#' } },
-    { name: 'Rohan Verma', role: 'Head of Content', bio: 'Award-winning writer and editor. Loves creating engaging narratives.', avatar: 'https://randomuser.me/api/portraits/men/2.jpg', social: { twitter: '#', linkedin: '#' } },
-    { name: 'Ananya Gupta', role: 'Creative Director', bio: 'Design enthusiast who believes in the power of visual storytelling.', avatar: 'https://randomuser.me/api/portraits/women/3.jpg', social: { twitter: '#', linkedin: '#' } },
-    { name: 'Karan Patel', role: 'Lead Developer', bio: 'Tech wizard building amazing experiences for our readers.', avatar: 'https://randomuser.me/api/portraits/men/4.jpg', social: { twitter: '#', linkedin: '#' } },
-    { name: 'Priya Singh', role: 'Community Manager', bio: 'Connecting with readers and building a thriving community.', avatar: 'https://randomuser.me/api/portraits/women/5.jpg', social: { twitter: '#', linkedin: '#' } },
-    { name: 'Vikram Yadav', role: 'SEO Specialist', bio: 'Making sure our content reaches the right audience.', avatar: 'https://randomuser.me/api/portraits/men/6.jpg', social: { twitter: '#', linkedin: '#' } },
-  ];
+    { name: 'Aarav Sharma', role: 'Founder & Chief Commander', bio: 'Former esports analyst with 10+ years of gaming journalism depth. Passionate about structural narrative matrices.', avatar: 'aarav.png', social: { twitter: '#', linkedin: '#' } },
+    { name: 'Rohan Verma', role: 'Head of Meta Intel', bio: 'Award-winning meta strategist. Specializes in multi-tiered competitive breakdowns and patch updates.', avatar: 'rohan.png', social: { twitter: '#', linkedin: '#' } },
+    { name: 'Ananya Gupta', role: 'Creative Director', bio: 'Design enthusiast defining the raw cyberpunk aesthetic and interactive layout styles of ApexEdge.', avatar: 'ananya.png', social: { twitter: '#', linkedin: '#' } },
+    { name: 'Karan Patel', role: 'Lead Engine Architect', bio: 'Tech wizard engineering real-time data pipelines and seamless network assets for our readers.', avatar: 'karan.png', social: { twitter: '#', linkedin: '#' } },
+    { name: 'Priya Singh', role: 'Syndicate Operator', bio: 'Connecting millions of global players and building a thriving community network layer.', avatar: 'priya.png', social: { twitter: '#', linkedin: '#' } },
+    { name: 'Vikram Yadav', role: 'Algorithmic Specialist', bio: 'Optimizing data infrastructure lines ensuring gaming analytics always hit the core target audience.', avatar: 'vikram.png', social: { twitter: '#', linkedin: '#' } },
+  ]
 
   const values = [
-    { title: 'Quality First', icon: <Crown size={24} />, description: 'We never compromise on content quality. Every article goes through rigorous review.', color: 'from-amber-500 to-orange-500' },
-    { title: 'Community Driven', icon: <Users size={24} />, description: 'Our readers shape our content. We listen, adapt, and grow together.', color: 'from-purple-500 to-indigo-500' },
-    { title: 'Innovation', icon: <Zap size={24} />, description: 'Always exploring new ways to deliver value and enhance user experience.', color: 'from-pink-500 to-rose-500' },
-    { title: 'Integrity', icon: <Shield size={24} />, description: 'Honest, transparent, and ethical in everything we do.', color: 'from-cyan-500 to-blue-500' },
+    { title: 'Absolute Precision', icon: <Crown size={22} />, description: 'We never compromise on meta accuracy. Every frame and mechanic undergoes rigorous strategy review.', accent: '#f59e0b' },
+    { title: 'Syndicate First', icon: <Users size={22} />, description: 'Our community shapes the platform. We scale alongside the world\'s most passionate gamers.', accent: '#a855f7' },
+    { title: 'Next-Gen Innovation', icon: <Zap size={22} />, description: 'Always tracking upcoming frameworks, graphic pipelines, and mechanical breakthrough elements.', accent: '#ec4899' },
+    { title: 'Uncompromising Truth', icon: <Shield size={22} />, description: 'Honest, completely un-biased reviews, and ethical coverage of industry developments.', accent: '#06b6d4' },
   ]
 
   const milestones = [
-    { year: '2020', title: 'Founded', description: 'ApexEdge Gaming started with a mission to democratize quality content.' },
-    { year: '2021', title: '1,000 Readers', description: 'Reached our first 1,000 monthly readers milestone.' },
-    { year: '2022', title: '50+ Writers', description: 'Expanded our team with writers from around the world.' },
-    { year: '2023', title: '100K+ Readers', description: 'Hit 100,000 monthly readers across 80+ countries.' },
-    { year: '2024', title: 'Premium Launch', description: 'Launched premium membership with exclusive content.' },
+    { year: '2022', title: 'System Initialization', description: 'ApexEdge Gaming deployed its primary node to democratize premium meta analysis.' },
+    { year: '2023', title: 'Tactical Expansion', description: 'Integrated our secondary databanks, hitting over 1,000 active monthly players.' },
+    { year: '2024', title: 'Global Grid Established', description: 'Expanded the editorial squadron with elite content creators from around the world.' },
+    { year: '2025', title: '100K Syndicate Inflow', description: 'Hit the massive milestone of 100,000 global server queries across 80+ active nations.' },
+    { year: '2026', title: 'Premium Node Deployment', description: 'Launched closed-alpha access memberships containing secure strategic drafting modules.' },
   ]
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white font-sans overflow-hidden selection:bg-amber-500 selection:text-black">
-      
-      {/* Hero Section - STRICT 110vh BACKGROUND */}
-      <div className="relative overflow-hidden h-[110vh] w-full bg-slate-900">
-        
-        {/* Full Screen Image Layer Stretched Perfectly */}
-        <div className="absolute inset-0 w-full h-full">
-          {sliderImages.map((img, index) => (
-            <div
-              key={index}
-              className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out ${
-                currentSlide === index ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
-              } transition-transform duration-[4000ms]`}
-              style={{ backgroundImage: `url('${img}')` }}
-            />
-          ))}
+    <div className="min-h-screen text-white font-sans overflow-hidden selection:bg-amber-500 selection:text-black" style={{ background: '#060608' }}>
+
+      {/* ── HERO ── */}
+      <div className="relative h-screen w-full overflow-hidden">
+        {sliderImages.map((img, i) => (
+          <div
+            key={i}
+            className="absolute inset-0 bg-cover bg-center transition-all duration-[1500ms] ease-in-out"
+            style={{
+              backgroundImage: `url('${img}')`,
+              opacity: currentSlide === i ? 1 : 0,
+              transform: currentSlide === i ? 'scale(1)' : 'scale(1.06)',
+            }}
+          />
+        ))}
+
+        {/* layered overlays */}
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(6,6,8,0.3) 0%, rgba(6,6,8,0.1) 40%, rgba(6,6,8,0.85) 80%, #060608 100%)' }} />
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(168,85,247,0.08) 0%, transparent 70%)' }} />
+
+        {/* noise texture */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`, backgroundSize: '200px' }} />
+
+        {/* scanning line */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.015]">
+          <div className="scanlines" />
         </div>
-        
-        {/* Subtle dynamic background highlights overlay */}
-        <div className="absolute inset-0 pointer-events-none z-10">
-          <div className="absolute top-0 -right-40 w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-10 animate-pulse-slow"></div>
-          <div className="absolute bottom-0 -left-40 w-96 h-96 bg-pink-500 rounded-full blur-3xl opacity-10 animate-pulse-slower"></div>
-          
-          {/* Transparent Grid Overlay */}
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%239C92AC%22 fill-opacity=%220.02%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-100"></div>
-        </div>
-        
-        {/* UI Controls Layer */}
-        <div className="absolute inset-x-0 bottom-0 z-20 pb-28 flex flex-col items-center justify-end h-full bg-gradient-to-t from-zinc-950 via-transparent to-transparent">
-          
-          {/* Big & Bold Slider Indicators */}
-          <div className="flex gap-3 backdrop-blur-md bg-black/10 px-4 py-2 rounded-full border border-white/10">
-            {sliderImages.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentSlide(index)}
-                className={`w-3.5 h-3.5 rounded-full transition-all duration-300 ${currentSlide === index ? 'bg-white w-12 shadow-lg' : 'bg-white/30 hover:bg-white/60'}`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
+
+        {/* content */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center pb-24 px-4 z-10">
+          <div className="inline-flex items-center gap-2.5 mb-8 px-4 py-2 rounded-full border border-white/10 backdrop-blur-md" style={{ background: 'rgba(255,255,255,0.04)' }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+            <span className="text-zinc-300 text-xs font-semibold tracking-[0.2em] uppercase">Established 2022 · Global HQ</span>
           </div>
 
-          {/* Scroll Indicator */}
-          <div className="absolute bottom-36 left-1/2 transform -translate-x-1/2 animate-bounce hidden md:block">
-            <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
-              <div className="w-1 h-2 bg-white/80 rounded-full mt-2 animate-scroll"></div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Smooth Transition Wave Divider */}
-        <div className="absolute bottom-0 left-0 right-0 pointer-events-none z-20">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="w-full h-auto min-h-[40px]">
-            <path fill="#09090b" fillOpacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-          </svg>
-        </div>
-      </div>
+          <h1 className="text-center text-5xl sm:text-7xl md:text-8xl font-black tracking-tight leading-[0.92] mb-6 uppercase">
+            <span className="block text-white">The Supreme Node of</span>
+            <span className="block" style={{ background: 'linear-gradient(135deg, #f59e0b 0%, #f97316 40%, #eab308 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+              Gaming Intel
+            </span>
+          </h1>
 
-      {/* Premium Content Body Wrapper - Smoky Background Image Overlay Layer */}
-      <div className="relative w-full bg-zinc-950">
-        
-        {/* Dynamic Slow Motion Smoke Effect Layer */}
-        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-10 bg-no-repeat bg-cover mix-blend-screen animate-smoke" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1600&q=80')" }}></div>
-        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-5 bg-no-repeat bg-cover mix-blend-color-dodge animate-smoke-reverse" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=1600&q=80')" }}></div>
+          <p className="text-center text-zinc-400 text-base sm:text-lg max-w-xl mx-auto leading-relaxed mb-10 font-medium">
+            Deconstructing hardware telemetry, patch configurations, and strategic meta blueprints across international digital grids.
+          </p>
 
-        {/* Stats Section */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-30">
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {stats.map((stat, idx) => (
-              <div key={idx} className="group bg-zinc-900/60 backdrop-blur-md rounded-2xl p-6 text-center shadow-2xl border border-zinc-800/80 transition-all duration-500 hover:-translate-y-2">
-                <div className={`w-16 h-16 bg-gradient-to-br ${stat.color} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-all duration-300`}>
-                  <div className="text-white">{stat.icon}</div>
-                </div>
-                <div className="text-3xl font-bold text-white tracking-tight">{stat.value}</div>
-                <div className="text-sm text-zinc-400 mt-1 font-medium">{stat.label}</div>
-                <div className="text-xs text-zinc-500 mt-2">{stat.description}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* 6 strictly alternating Left-Right Rockstar Style Image Showcases Grid Layout */}
-        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 space-y-32">
-          {showcaseRows.map((row) => (
-            <div 
-              key={row.id} 
-              className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center"
-            >
-              {/* Media Block (Order changed strictly based on row layout boolean) */}
-              <div className={`lg:col-span-5 relative w-full h-[400px] overflow-hidden rounded-2xl group border border-zinc-800 bg-zinc-900/40 backdrop-blur-sm ${
-                row.imageOnLeft ? 'lg:order-1' : 'lg:order-2'
-              }`}>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 z-10 transition-opacity duration-300 group-hover:opacity-40"></div>
-                <img 
-                  src={row.img} 
-                  alt={row.title} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          <div className="flex items-center gap-4">
+            <div className="flex gap-2">
+              {sliderImages.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentSlide(i)}
+                  className="transition-all duration-500 rounded-full"
+                  style={{
+                    width: currentSlide === i ? '36px' : '8px',
+                    height: '8px',
+                    background: currentSlide === i ? '#f59e0b' : 'rgba(255,255,255,0.25)',
+                  }}
+                  aria-label={`Slide ${i + 1}`}
                 />
-              </div>
+              ))}
+            </div>
+          </div>
+        </div>
 
-              {/* Text Block (Fills empty side smoothly using standard order matrix tokens) */}
-              <div className={`lg:col-span-7 space-y-6 ${
-                row.imageOnLeft ? 'lg:order-2 lg:pl-8' : 'lg:order-1 lg:pr-8'
-              }`}>
-                <div className="inline-flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-full px-4 py-1.5 shadow-lg">
-                  <Sparkles size={14} className="text-amber-500 animate-pulse" />
-                  <span className="text-zinc-400 text-xs font-bold uppercase tracking-wider">{row.badge}</span>
+        {/* scroll cue */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10 opacity-50">
+          <span className="text-[10px] tracking-[0.3em] text-zinc-500 uppercase">Scroll</span>
+          <div className="w-px h-10 bg-gradient-to-b from-zinc-500 to-transparent animate-pulse" />
+        </div>
+
+        <svg className="absolute bottom-0 left-0 right-0 w-full" viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#060608" d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" />
+        </svg>
+      </div>
+
+      {/* ── STATS ── */}
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 -mt-6 mb-24"
+           data-section="stats"
+           style={{ opacity: visibleSections['stats'] ? 1 : 0, transform: visibleSections['stats'] ? 'translateY(0)' : 'translateY(30px)', transition: 'all 0.8s ease' }}>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {stats.map((stat, idx) => (
+            <div
+              key={idx}
+              className="group relative rounded-2xl p-6 overflow-hidden transition-all duration-500 hover:-translate-y-1"
+              style={{
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.07)',
+                transitionDelay: `${idx * 80}ms`,
+              }}
+            >
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" style={{ background: `radial-gradient(circle at 30% 30%, ${stat.bg} 0%, transparent 70%)` }} />
+              <div className="relative">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style={{ background: stat.bg, color: stat.color }}>
+                  {stat.icon}
                 </div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
-                  {row.title}
-                </h2>
-                <p className="text-zinc-300 text-base sm:text-lg leading-relaxed font-medium">
-                  {row.desc}
-                </p>
-                <p className="text-zinc-500 text-sm leading-relaxed">
-                  {row.subText}
-                </p>
+                <div className="text-3xl font-black text-white mb-1 tracking-tight">{stat.value}</div>
+                <div className="text-sm font-semibold text-zinc-300 mb-1">{stat.label}</div>
+                <div className="text-xs text-zinc-600">{stat.description}</div>
               </div>
+              <div className="absolute bottom-0 left-0 right-0 h-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-b-2xl" style={{ background: `linear-gradient(90deg, transparent, ${stat.color}, transparent)` }} />
             </div>
           ))}
-        </section>
-
-        {/* Mission & Vision */}
-        <section className="relative z-10 bg-gradient-to-br from-zinc-950 via-zinc-900/30 to-zinc-950 py-24 border-t border-b border-zinc-900">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-zinc-900/40 backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-zinc-800/80 transition-all duration-300 transform hover:-translate-y-1">
-                <div className="w-16 h-16 bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl flex items-center justify-center mb-5 shadow-lg shadow-orange-500/10">
-                  <Target size={28} className="text-black font-black" />
-                </div>
-                <h3 className="text-2xl font-black text-white tracking-tight mb-3">Our Mission</h3>
-                <p className="text-zinc-400 leading-relaxed font-medium">
-                  To empower individuals through knowledge by delivering high-quality, 
-                  accessible, and engaging content that inspires action and sparks curiosity.
-                </p>
-              </div>
-              <div className="bg-zinc-900/40 backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-zinc-800/80 transition-all duration-300 transform hover:-translate-y-1">
-                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center mb-5 shadow-lg shadow-purple-500/10">
-                  <Rocket size={28} className="text-white" />
-                </div>
-                <h3 className="text-2xl font-black text-white tracking-tight mb-3">Our Vision</h3>
-                <p className="text-zinc-400 leading-relaxed font-medium">
-                  To become the world's most trusted platform for insightful content, 
-                  connecting millions of curious minds through stories that matter.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Core Values */}
-        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-full px-4 py-2 mb-4">
-              <Star size={14} className="text-amber-500" />
-              <span className="text-zinc-400 text-xs font-bold uppercase tracking-wider">Core Values</span>
-            </div>
-            <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">What We Stand For</h2>
-            <p className="text-zinc-500 text-lg max-w-2xl mx-auto font-medium">
-              Our guiding principles that shape everything we do
-            </p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {values.map((value, idx) => (
-              <div key={idx} className="group bg-zinc-900/20 rounded-2xl p-6 text-center border border-zinc-900 hover:border-zinc-800/80 transition-all duration-500 hover:-translate-y-2">
-                <div className={`w-16 h-16 bg-gradient-to-br ${value.color} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-all duration-300`}>
-                  <div className="text-white">{value.icon}</div>
-                </div>
-                <h3 className="text-xl font-bold text-zinc-100 mb-3">{value.title}</h3>
-                <p className="text-zinc-400 text-sm leading-relaxed">{value.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Journey Timeline */}
-        <section className="relative z-10 bg-zinc-950 py-24 border-t border-zinc-900">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <div className="inline-flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-full px-4 py-2 mb-4">
-                <Clock size={14} className="text-purple-400" />
-                <span className="text-zinc-400 text-xs font-bold uppercase tracking-wider">Our Journey</span>
-              </div>
-              <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">Milestones & Achievements</h2>
-              <p className="text-zinc-500 text-lg max-w-2xl mx-auto font-medium">
-                Key moments that shaped our story
-              </p>
-            </div>
-            <div className="relative">
-              <div className="absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-zinc-800 hidden md:block"></div>
-              <div className="space-y-12">
-                {milestones.map((milestone, idx) => (
-                  <div key={idx} className={`relative flex flex-col md:flex-row items-center gap-6 ${idx % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
-                    <div className="flex-1 md:text-right">
-                      <div className="bg-zinc-900/40 backdrop-blur-md rounded-2xl p-6 border border-zinc-900 hover:border-zinc-800 transition-all duration-300 hover:-translate-y-1 shadow-2xl">
-                        <div className="text-3xl font-black text-purple-400 mb-2">{milestone.year}</div>
-                        <h3 className="text-xl font-bold text-zinc-100 mb-2">{milestone.title}</h3>
-                        <p className="text-zinc-400 text-sm leading-relaxed">{milestone.description}</p>
-                      </div>
-                    </div>
-                    <div className="relative z-10">
-                      <div className="w-12 h-12 bg-zinc-900 border border-zinc-800 rounded-full flex items-center justify-center shadow-lg">
-                        <CheckCircle2 size={20} className="text-amber-500" />
-                      </div>
-                    </div>
-                    <div className="flex-1"></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Team Section */}
-        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-full px-4 py-2 mb-4">
-              <Users size={14} className="text-amber-500" />
-              <span className="text-zinc-400 text-xs font-bold uppercase tracking-wider">Meet the Team</span>
-            </div>
-            <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">The Minds Behind ApexEdge Gaming</h2>
-            <p className="text-zinc-500 text-lg max-w-2xl mx-auto font-medium">
-              Passionate individuals dedicated to bringing you the best content
-            </p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {teamMembers.map((member, idx) => (
-              <div key={idx} className="group bg-zinc-900/30 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-zinc-900 hover:border-zinc-800/80">
-                <div className="relative h-64 overflow-hidden">
-                  <img 
-                    src={member.avatar} 
-                    alt={member.name} 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 to-transparent opacity-40 group-hover:opacity-60 transition-opacity duration-500"></div>
-                </div>
-                <div className="p-6 text-center">
-                  <h3 className="text-xl font-bold text-zinc-100 mb-1">{member.name}</h3>
-                  <p className="text-purple-400 text-sm font-semibold mb-3">{member.role}</p>
-                  <p className="text-zinc-400 text-sm leading-relaxed mb-4">{member.bio}</p>
-                  <div className="flex items-center justify-center gap-3">
-                    <a href={member.social.twitter} className="text-zinc-500 hover:text-white transition-colors transform hover:scale-110">
-                      <FaTwitter size={18} />
-                    </a>
-                    <a href={member.social.linkedin} className="text-zinc-500 hover:text-white transition-colors transform hover:scale-110">
-                      <FaLinkedin size={18} />
-                    </a>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Newsletter CTA */}
-        <section className="relative z-10 bg-zinc-950 py-24 border-t border-zinc-900">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="relative bg-zinc-900/40 border border-zinc-900 rounded-3xl overflow-hidden shadow-2xl">
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1557683316-973673baf926?w=1600&q=80')] bg-cover bg-center mix-blend-overlay opacity-5"></div>
-              <div className="absolute top-0 -right-32 w-64 h-64 bg-purple-500 rounded-full blur-3xl opacity-5 animate-pulse-slow"></div>
-              <div className="absolute bottom-0 -left-32 w-64 h-64 bg-indigo-500 rounded-full blur-3xl opacity-5 animate-pulse-slower"></div>
-              
-              <div className="relative p-12 md:p-16 text-center">
-                <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-6 py-2.5 mb-6">
-                  <Mail size={16} className="text-amber-500" />
-                  <span className="text-zinc-300 text-sm font-bold uppercase tracking-wider">Stay Connected</span>
-                </div>
-                <h3 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">Join Our Community</h3>
-                <p className="text-zinc-400 text-base md:text-lg mb-8 max-w-md mx-auto font-medium">
-                  Subscribe to our newsletter and never miss an update from us.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-                  <input
-                    type="email"
-                    placeholder="Enter your email address"
-                    className="flex-1 px-6 py-3.5 rounded-full text-white bg-zinc-950 border border-zinc-800 focus:outline-none focus:ring-2 focus:ring-amber-500 outline-none placeholder-zinc-600 font-medium"
-                  />
-                  <button className="bg-white text-black px-8 py-3.5 rounded-full font-bold hover:bg-zinc-200 transition-all duration-300 hover:scale-105 flex items-center gap-2 justify-center group">
-                    Subscribe Now
-                    <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-                <div className="flex items-center justify-center gap-4 mt-6">
-                  <div className="flex items-center gap-2 text-zinc-500 text-xs font-semibold"><CheckCircle2 size={12} className="text-amber-500" /><span>No spam</span></div>
-                  <div className="flex items-center gap-2 text-zinc-500 text-xs font-semibold"><CheckCircle2 size={12} className="text-amber-500" /><span>Unsubscribe anytime</span></div>
-                  <div className="flex items-center gap-2 text-zinc-500 text-xs font-semibold"><CheckCircle2 size={12} className="text-amber-500" /><span>Free forever</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
+        </div>
       </div>
+
+      {/* ── SHOWCASE ROWS ── */}
+      <section className="relative max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-28">
+        {showcaseRows.map((row, idx) => (
+          <div
+            key={row.id}
+            data-section={`row-${row.id}`}
+            className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center"
+            style={{
+              opacity: visibleSections[`row-${row.id}`] ? 1 : 0,
+              transform: visibleSections[`row-${row.id}`] ? 'translateY(0)' : 'translateY(40px)',
+              transition: 'all 0.9s cubic-bezier(0.16,1,0.3,1)',
+            }}
+          >
+            {/* image */}
+            <div className={`relative rounded-2xl overflow-hidden group ${row.imageOnLeft ? 'lg:order-1' : 'lg:order-2'}`}
+                 style={{ aspectRatio: '16/10' }}>
+              <div className="absolute inset-0 z-10" style={{ background: 'linear-gradient(135deg, rgba(0,0,0,0.4) 0%, transparent 50%, rgba(0,0,0,0.2) 100%)' }} />
+              <img
+                src={row.img}
+                alt={row.title}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              {/* corner accents */}
+              <div className="absolute top-3 left-3 w-6 h-6 border-t-2 border-l-2 border-amber-500/60 z-20 rounded-tl-sm" />
+              <div className="absolute bottom-3 right-3 w-6 h-6 border-b-2 border-r-2 border-amber-500/60 z-20 rounded-br-sm" />
+              {/* badge on image */}
+              <div className="absolute bottom-5 left-5 z-20 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase"
+                   style={{ background: 'rgba(0,0,0,0.7)', border: '1px solid rgba(245,158,11,0.4)', color: '#f59e0b', backdropFilter: 'blur(8px)' }}>
+                {row.badge}
+              </div>
+            </div>
+
+            {/* text */}
+            <div className={`space-y-5 ${row.imageOnLeft ? 'lg:order-2' : 'lg:order-1'}`}>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-[2px]" style={{ background: 'linear-gradient(90deg, #f59e0b, transparent)' }} />
+                <span className="text-amber-500 text-xs font-bold tracking-[0.2em] uppercase">{row.badge}</span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-black text-white leading-tight tracking-tight">
+                {row.title}
+              </h2>
+              <p className="text-zinc-300 leading-relaxed text-base">{row.desc}</p>
+              <p className="text-zinc-500 text-sm leading-relaxed border-l-2 border-zinc-800 pl-4">{row.subText}</p>
+            </div>
+          </div>
+        ))}
+      </section>
+
+      {/* ── MISSION & VISION ── */}
+      <section
+        className="relative py-24 mt-16"
+        data-section="mission"
+        style={{
+          background: 'linear-gradient(180deg, #060608 0%, rgba(15,10,25,0.8) 50%, #060608 100%)',
+          opacity: visibleSections['mission'] ? 1 : 0,
+          transform: visibleSections['mission'] ? 'translateY(0)' : 'translateY(30px)',
+          transition: 'all 0.8s ease',
+        }}
+      >
+        {/* divider line */}
+        <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(245,158,11,0.3) 50%, transparent 100%)' }} />
+        <div className="absolute bottom-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(168,85,247,0.2) 50%, transparent 100%)' }} />
+
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[
+              { icon: <Target size={24} />, label: 'Our Mission', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', text: 'To empower individuals through knowledge by delivering high-quality, accessible, and engaging gaming content that inspires strategy and sparks tactical performance.' },
+              { icon: <Rocket size={24} />, label: 'Our Vision', color: '#a855f7', bg: 'rgba(168,85,247,0.1)', text: 'To become the world\'s most trusted network platform for insightful analytics, connecting millions of competitive minds through data structures that matter.' },
+            ].map((item, idx) => (
+              <div key={idx} className="group relative rounded-2xl p-8 overflow-hidden transition-all duration-500 hover:-translate-y-1"
+                   style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                <div className="absolute top-0 left-0 right-0 h-[2px] rounded-t-2xl" style={{ background: `linear-gradient(90deg, ${item.color}80, ${item.color}20, transparent)` }} />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6" style={{ background: item.bg, color: item.color }}>
+                  {item.icon}
+                </div>
+                <h3 className="text-xl font-black text-white mb-3 tracking-tight">{item.label}</h3>
+                <p className="text-zinc-400 leading-relaxed">{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CORE VALUES ── */}
+      <section
+        className="relative py-24 max-w-6xl mx-auto px-4 sm:px-6"
+        data-section="values"
+        style={{
+          opacity: visibleSections['values'] ? 1 : 0,
+          transform: visibleSections['values'] ? 'translateY(0)' : 'translateY(30px)',
+          transition: 'all 0.8s ease',
+        }}
+      >
+        <div className="text-center mb-14">
+          <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <Star size={13} className="text-amber-500" />
+            <span className="text-zinc-400 text-xs font-bold uppercase tracking-[0.2em]">Syndicate Directives</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight">What We Stand For</h2>
+          <p className="text-zinc-500 mt-3 max-w-lg mx-auto">Our guiding principles that shape every analytical post we publish</p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {values.map((v, idx) => (
+            <div
+              key={idx}
+              className="group relative rounded-2xl p-6 text-center overflow-hidden transition-all duration-500 hover:-translate-y-2"
+              style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)', transitionDelay: `${idx * 70}ms` }}
+            >
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `radial-gradient(circle at 50% 0%, ${v.accent}15 0%, transparent 60%)` }} />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-[2px] opacity-0 group-hover:opacity-100 transition-all duration-500" style={{ background: `linear-gradient(90deg, transparent, ${v.accent}, transparent)` }} />
+              <div className="relative w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 transition-transform duration-300 group-hover:scale-110" style={{ background: `${v.accent}18`, color: v.accent }}>
+                {v.icon}
+              </div>
+              <h3 className="text-base font-bold text-white mb-2 tracking-tight">{v.title}</h3>
+              <p className="text-zinc-500 text-sm leading-relaxed">{v.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── TIMELINE ── */}
+      <section
+        className="relative py-24"
+        data-section="timeline"
+        style={{
+          background: 'rgba(255,255,255,0.015)',
+          borderTop: '1px solid rgba(255,255,255,0.05)',
+          borderBottom: '1px solid rgba(255,255,255,0.05)',
+          opacity: visibleSections['timeline'] ? 1 : 0,
+          transform: visibleSections['timeline'] ? 'translateY(0)' : 'translateY(30px)',
+          transition: 'all 0.8s ease',
+        }}
+      >
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-14">
+            <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <Clock size={13} className="text-purple-400" />
+              <span className="text-zinc-400 text-xs font-bold uppercase tracking-[0.2em]">Our Evolution Logs</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight">Milestones & Achievements</h2>
+            <p className="text-zinc-500 mt-3">Key operational phases that shaped our platform architecture</p>
+          </div>
+
+          <div className="relative">
+            {/* center line */}
+            <div className="absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2 hidden md:block" style={{ background: 'linear-gradient(180deg, transparent, rgba(168,85,247,0.4) 10%, rgba(168,85,247,0.4) 90%, transparent)' }} />
+
+            <div className="space-y-10">
+              {milestones.map((m, idx) => (
+                <div key={idx} className={`relative flex flex-col md:flex-row items-center gap-6 ${idx % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}
+                     style={{ opacity: visibleSections['timeline'] ? 1 : 0, transform: visibleSections['timeline'] ? 'translateY(0)' : 'translateY(20px)', transition: `all 0.6s ease ${idx * 100 + 200}ms` }}>
+                  <div className="flex-1">
+                    <div className={`rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 ${idx % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}
+                         style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                      <div className="text-3xl font-black mb-2" style={{ color: '#a855f7' }}>{m.year}</div>
+                      <h3 className="text-lg font-bold text-white mb-1">{m.title}</h3>
+                      <p className="text-zinc-500 text-sm leading-relaxed">{m.description}</p>
+                    </div>
+                  </div>
+                  <div className="relative z-10 flex-shrink-0">
+                    <div className="w-11 h-11 rounded-full flex items-center justify-center" style={{ background: 'rgba(168,85,247,0.15)', border: '2px solid rgba(168,85,247,0.5)' }}>
+                      <CheckCircle2 size={18} style={{ color: '#a855f7' }} />
+                    </div>
+                  </div>
+                  <div className="flex-1 hidden md:block" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TEAM ── */}
+      <section
+        className="relative py-24 max-w-6xl mx-auto px-4 sm:px-6"
+        data-section="team"
+        style={{
+          opacity: visibleSections['team'] ? 1 : 0,
+          transform: visibleSections['team'] ? 'translateY(0)' : 'translateY(30px)',
+          transition: 'all 0.8s ease',
+        }}
+      >
+        <div className="text-center mb-14">
+          <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <Users size={13} className="text-amber-500" />
+            <span className="text-zinc-400 text-xs font-bold uppercase tracking-[0.2em]">Command Syndicate</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight">The Minds Behind ApexEdge Gaming</h2>
+          <p className="text-zinc-500 mt-3">Passionate industry operatives dedicated to rendering absolute precision analytics</p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {teamMembers.map((member, idx) => (
+            <div
+              key={idx}
+              className="group relative rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2"
+              style={{
+                background: 'rgba(255,255,255,0.025)',
+                border: '1px solid rgba(255,255,255,0.07)',
+                transitionDelay: `${idx * 60}ms`,
+              }}
+            >
+              {/* image with overlay */}
+              <div className="relative h-56 overflow-hidden">
+                <div className="absolute inset-0 z-10" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(6,6,8,0.95) 100%)' }} />
+                <img src={member.avatar} alt={member.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                {/* role pill on image */}
+                <div className="absolute bottom-4 left-4 z-20 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase"
+                     style={{ background: 'rgba(168,85,247,0.2)', border: '1px solid rgba(168,85,247,0.4)', color: '#c084fc', backdropFilter: 'blur(8px)' }}>
+                  {member.role}
+                </div>
+              </div>
+
+              <div className="p-5">
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="text-lg font-bold text-white">{member.name}</h3>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <a href={member.social.twitter} className="text-zinc-600 hover:text-white transition-colors">
+                      <FaTwitter size={15} />
+                    </a>
+                    <a href={member.social.linkedin} className="text-zinc-600 hover:text-white transition-colors">
+                      <FaLinkedin size={15} />
+                    </a>
+                  </div>
+                </div>
+                <p className="text-zinc-500 text-sm leading-relaxed">{member.bio}</p>
+              </div>
+
+              {/* bottom accent */}
+              <div className="absolute bottom-0 left-0 right-0 h-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: 'linear-gradient(90deg, transparent, rgba(168,85,247,0.6), transparent)' }} />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── NEWSLETTER ── */}
+      <section
+        className="relative py-20 px-4 sm:px-6"
+        data-section="newsletter"
+        style={{
+          opacity: visibleSections['newsletter'] ? 1 : 0,
+          transform: visibleSections['newsletter'] ? 'translateY(0)' : 'translateY(30px)',
+          transition: 'all 0.8s ease',
+        }}
+      >
+        <div className="max-w-3xl mx-auto relative rounded-3xl overflow-hidden p-10 md:p-14 text-center"
+             style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+          {/* glows */}
+          <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.12) 0%, transparent 70%)' }} />
+          <div className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.08) 0%, transparent 70%)' }} />
+          <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: 'linear-gradient(90deg, transparent, rgba(245,158,11,0.5) 50%, transparent)' }} />
+
+          <div className="relative">
+            <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full" style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.25)' }}>
+              <Mail size={14} className="text-amber-400" />
+              <span className="text-amber-400 text-xs font-bold uppercase tracking-[0.2em]">Sync Updates Feed</span>
+            </div>
+            <h3 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-3">Join the Syndicate Feed</h3>
+            <p className="text-zinc-400 mb-8 max-w-md mx-auto">Subscribe to our secure transmission matrix and never miss a tactical alpha analysis patch line.</p>
+
+            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+              <input
+                type="email"
+                placeholder="Enter encrypted email coordinate"
+                className="flex-1 px-5 py-3.5 rounded-full text-white text-sm placeholder-zinc-600 outline-none transition-all duration-300 focus:ring-2 focus:ring-amber-500/50"
+                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
+              />
+              <button className="group flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-bold text-sm transition-all duration-300 hover:scale-105 active:scale-95"
+                      style={{ background: 'linear-gradient(135deg, #f59e0b, #f97316)', color: '#000' }}>
+                Initialize Sync
+                <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+
+            <div className="flex items-center justify-center gap-6 mt-6">
+              {['Encrypted Transmission', 'Disconnect Anytime'].map((txt, i) => (
+                <div key={i} className="flex items-center gap-1.5 text-zinc-600 text-xs">
+                  <CheckCircle2 size={11} className="text-amber-500" />
+                  <span>{txt}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       <style>{`
-        @keyframes smokeMovement {
-          0% { transform: scale(1) translate(0px, 0px) rotate(0deg); opacity: 0.08; }
-          50% { transform: scale(1.08) translate(20px, -15px) rotate(3deg); opacity: 0.12; }
-          100% { transform: scale(1) translate(0px, 0px) rotate(0deg); opacity: 0.08; }
-        }
-        @keyframes smokeMovementReverse {
-          0% { transform: scale(1.05) translate(0px, 0px) rotate(0deg); opacity: 0.04; }
-          50% { transform: scale(1) translate(-15px, 20px) rotate(-2deg); opacity: 0.07; }
-          100% { transform: scale(1.05) translate(0px, 0px) rotate(0deg); opacity: 0.04; }
-        }
-        .animate-smoke {
-          animation: smokeMovement 12s ease-in-out infinite;
-        }
-        .animate-smoke-reverse {
-          animation: smokeMovementReverse 16s ease-in-out infinite;
-        }
-        @keyframes pulse-slow {
-          0%, 100% { opacity: 0.08; transform: scale(1); }
-          50% { opacity: 0.12; transform: scale(1.03); }
-        }
-        @keyframes pulse-slower {
-          0%, 100% { opacity: 0.08; transform: scale(1); }
-          50% { opacity: 0.12; transform: scale(1.05); }
-        }
-        @keyframes scroll {
-          0% { transform: translateY(0); opacity: 1; }
-          100% { transform: translateY(10px); opacity: 0; }
-        }
-        @keyframes bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(10px); }
-        }
-        .animate-pulse-slow {
-          animation: pulse-slow 5s ease-in-out infinite;
-        }
-        .animate-pulse-slower {
-          animation: pulse-slower 7s ease-in-out infinite;
-        }
-        .animate-scroll {
-          animation: scroll 1.5s ease-in-out infinite;
-        }
-        .animate-bounce {
-          animation: bounce 2s ease-in-out infinite;
+        @keyframes scroll { 0%{transform:translateY(0);opacity:1} 100%{transform:translateY(10px);opacity:0} }
+        .scanlines {
+          width: 100%; height: 100%;
+          background: repeating-linear-gradient(0deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 3px);
         }
       `}</style>
     </div>

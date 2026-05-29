@@ -6,28 +6,28 @@ const VIDEO_SRC = '/back.mp4'
 
 const FEATURE_CARDS = [
   {
-    image: 'game12.png',
+    image: 'card1.png',
     title: 'The premium hub for ApexEdge Gaming players.',
     cta: 'Learn More',
     to: '/blog',
     btnClass: 'bg-[#fcaf17] hover:bg-amber-500 text-black',
   },
   {
-    image: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600&q=80&auto=format&fit=crop',
+    image: 'card2.png',
     title: 'Create your own personalized gaming profiles.',
     cta: 'Create Now',
     to: '/about',
     btnClass: 'bg-black/80 hover:bg-neutral-900 text-white border border-white/10',
   },
   {
-    image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&q=80&auto=format&fit=crop',
+    image: 'card3.png',
     title: 'A SAFEHOUSE IN THE HILLS — New exclusive content drop.',
     cta: 'Watch Trailer',
     to: '/blog',
     btnClass: 'bg-white text-black hover:bg-[#fcaf17]',
   },
   {
-    image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&q=80&auto=format&fit=crop',
+    image: 'card4.png',
     title: "See all the challenges you've completed in your gaming career.",
     cta: 'View Progress',
     to: '/blog',
@@ -45,10 +45,10 @@ export default function VideoFeatureSection() {
       const rect = sectionRef.current.getBoundingClientRect()
       const vh = window.innerHeight
       
-      // यह ट्रैक करता है कि यह सेक्शन स्क्रीन के टॉप से कितना ऊपर स्क्रॉल हुआ है
+      // Tracks how far this section has scrolled past the top of the screen
       const scrolled = Math.max(0, -rect.top)
       
-      // प्रोग्रेस रेट को और धीमा और स्मूथ (vh * 1.2) किया गया है ताकि ब्लैक इफेक्ट अचानक न आए
+      // Progress rate is slowed down and smoothed (vh * 1.2) to prevent sudden black overlay transitions
       const progress = Math.min(1, scrolled / (vh * 1.2))
       setScrollProgress(progress)
     }
@@ -58,13 +58,13 @@ export default function VideoFeatureSection() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // वीडियो स्क्रॉल होने पर हल्का सा ही धीमा होगा (1 से 0.4 तक ही जाएगा, पूरी तरह गायब नहीं होगा)
+  // Video will slightly dim on scroll (ranges from 1 down to 0.4, won't disappear completely)
   const videoOpacity = 1 - scrollProgress * 0.6
   
-  // शुरुआत में यह बिल्कुल 0 (पारदर्शी) रहेगा, जैसे-जैसे स्क्रॉल करेंगे यह धीरे-धीरे 0.85 (ब्लैक) तक बढ़ेगा
+  // Starts completely transparent (0) and gradually increases up to 0.85 (black) on scroll
   const overlayDark = scrollProgress * 0.85 
   
-  // टेक्स्ट स्क्रॉल के साथ बहुत ही स्मूथली फेड होगा
+  // Text fades out smoothly alongside scroll progress
   const textOpacity = 1 - scrollProgress * 1.8
 
   return (
@@ -106,7 +106,7 @@ export default function VideoFeatureSection() {
           className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 text-center transition-all duration-300"
           style={{ 
             opacity: Math.max(0, textOpacity),
-            transform: `translateY(-${scrollProgress * 20}px)` // स्क्रॉल पर हल्का सा ऊपर की तरफ तैरता हुआ इफ़ेक्ट
+            transform: `translateY(-${scrollProgress * 20}px)` // Subtle floating upward effect on scroll
           }}
         >
           <p className="text-[#fcaf17] text-xs font-black tracking-[0.3em] uppercase mb-3">
@@ -133,7 +133,7 @@ export default function VideoFeatureSection() {
         </div>
       </div>
 
-      {/* Cards Sub-Section — वीडियो के ऊपर मक्खन की तरह स्क्रॉल होकर आएगी */}
+      {/* Cards Sub-Section — Smoothly scrolls over the video backdrop */}
       <div className="relative z-10 bg-[#0a0a0a] w-full border-t border-neutral-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
           <h3 className="rockstar-title-font text-2xl text-white mb-10 tracking-tight">
